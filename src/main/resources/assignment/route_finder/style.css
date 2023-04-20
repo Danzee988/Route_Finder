@@ -1,0 +1,107 @@
+.button
+{
+-fx-background-color : #05071F;
+-fx-text-fill : #e7e5e5;
+}
+.button:hover{
+-fx-background-color : #10165F;
+}
+.button:pressed
+{
+-fx-background-color : #1620A1;
+}
+
+.scroll-pane {
+    -fx-background-color: #02030A;
+}
+
+.scroll-bar:horizontal, .scroll-bar:vertical{
+    -fx-background-color:transparent;
+}
+
+.increment-button, .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #10165F;
+    -fx-background-radius: 5em;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: black;
+}
+
+.text-area {
+    text-area-background: #02030A;
+    -fx-text-fill: white;
+}
+
+.text-area .content {
+    -fx-background-color: text-area-background ;
+}
+
+.text-field {
+    -fx-text-fill: white;
+}
+
+.list-view {
+    -fx-background-color: #02030A;
+    -fx-border-color: #1620A1;
+    -fx-text-fill: #FFFFFF;
+}
+
+.tree-view .content {
+    -fx-background-color: text-area-background;
+    -fx-text-fill: #FFFFFF;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #FFFFFF;
+}
+.combo-box .list-cell:hover {
+    -fx-background-color: #1335FF;
+}
+
+.list-view .list-cell{
+    -fx-background-color: #02030A ;
+    -fx-text-fill: #FFFFFF;
+}
+
+.list-view .list-cell:hover{
+    -fx-background-color: #1335FF ;
+}
+
+.scroll-pane {
+    -fx-background: #02030A;
+}
+
+#btnBrighter{
+    -fx-background-color : #05074F;
+    -fx-text-fill : #e7e5e5;
+}
+
+#btnBrighter:hover{
+    -fx-background-color : #10168F;
+}
+
+#btnBrighter:pressed{
+    -fx-background-color : #1620D1;
+}
+
+#goodsImage{
+    -fx-border-color: blue;
+}
+
+#chooseItem .list-cell:selected{
+    -fx-background-color: #181dd6;
+}
