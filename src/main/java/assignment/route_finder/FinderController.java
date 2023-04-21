@@ -1,11 +1,14 @@
 package assignment.route_finder;
 
+import Methods.Sorting;
+import Methods.Stations;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -13,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class FinderController {
@@ -92,37 +96,23 @@ public class FinderController {
     }
 
     @FXML
-    void scan(MouseEvent event) throws IOException {
-        System.out.println("scan method called");
+    private TextField stationID;
 
-        String path = "/Users/danze/Desktop/London.csv/";
+    @FXML
+    void findStation(MouseEvent event) throws Exception {
+        Stations stations = new Stations();
+        String station = stationID.getText();
 
-        BufferedReader br = new BufferedReader(new FileReader(path));
+        HashMap<String, String[]> map = stations.createStationsMap();
 
-        Map<String, String[]> map = new HashMap<>();
-        String line;
-        int newId = 1;
-        while ((line = br.readLine()) != null) {
-            String[] values = line.split(",");
-            if (values.length > 4 && "1".equals(values[4].trim())) {
-                String[] stations = line.split(",");
-                stations[0] = Integer.toString(newId); // Replace the ID with the new value
-                map.put(stations[0], stations); // Store the array of values using the new ID as the key
-                newId++; // Increment the new ID for the next station
-            }
-        }
-
-        br.close();
 
         for (String key : map.keySet()) {
-            System.out.println("Key: " + key + ", Value: " + Arrays.toString(map.get(key)));
+            System.out.println(key);
+            System.out.println("Station: " + Arrays.toString(map.get(0)) + ", " + Arrays.toString(map.get(3)));
+//            if (Arrays.toString(map.get(key)).contains(station)) {
+//                System.out.println("Key: " + key + ", Value: " + Arrays.toString(map.get(key)));
+//            }
         }
-
-        // You can now use the map to access the updated information for each station
-//        String[] aldgate = map.get("1"); // ID 1 is the first station that meets the condition
-//        if (aldgate != null) {
-//            System.out.println(Arrays.toString(aldgate));
-//        }
     }
 
 
