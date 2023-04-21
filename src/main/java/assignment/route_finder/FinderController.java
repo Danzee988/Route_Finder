@@ -12,8 +12,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
 public class FinderController {
 
@@ -90,4 +90,51 @@ public class FinderController {
         Chooser();
 
     }
+
+    @FXML
+    void scan(MouseEvent event) throws IOException {
+        System.out.println("scan method called");
+
+        String path = "/Users/danze/Desktop/London.csv/";
+
+        BufferedReader br = new BufferedReader(new FileReader(path));
+
+        Map<String, String[]> map = new HashMap<>();
+        String line;
+        int newId = 1;
+        while ((line = br.readLine()) != null) {
+            String[] values = line.split(",");
+            if (values.length > 4 && "1".equals(values[4].trim())) {
+                String[] stations = line.split(",");
+                stations[0] = Integer.toString(newId); // Replace the ID with the new value
+                map.put(stations[0], stations); // Store the array of values using the new ID as the key
+                newId++; // Increment the new ID for the next station
+            }
+        }
+
+        br.close();
+
+        for (String key : map.keySet()) {
+            System.out.println("Key: " + key + ", Value: " + Arrays.toString(map.get(key)));
+        }
+
+        // You can now use the map to access the updated information for each station
+//        String[] aldgate = map.get("1"); // ID 1 is the first station that meets the condition
+//        if (aldgate != null) {
+//            System.out.println(Arrays.toString(aldgate));
+//        }
+    }
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
