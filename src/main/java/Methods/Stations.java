@@ -1,30 +1,69 @@
 package Methods;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Stations {
+    static List<String[]> result = new ArrayList<>();
+    int id;
+    String name;
 
-    public HashMap<String, String[]> createStationsMap() throws Exception {
-        String path = "/Users/danze/Desktop/London.csv/";
+    float longitude;
 
-        BufferedReader br = new BufferedReader(new FileReader(path));
+    float latitude;
 
-        Map<String, String[]> map = new HashMap<>();
-        String line;
-        int newId = 1;
-            while ((line = br.readLine()) != null) {                        // Read the file line by line
-                String[] values = line.split(",");                    // Split the line into an array of values
-                if (values.length > 4 && "1".equals(values[4].trim())) {    // Check if the line contains the station ID
-                    String[] stations = line.split(",");              // Split the line into an array of values
-                    stations[0] = Integer.toString(newId);                  // Replace the ID with the new value
-                    map.put(stations[0], stations);                         // Store the array of values using the new ID as the key
-                    newId++;                                                // Increment the new ID for the next station
-                }
-            }
-            br.close();
-        return (HashMap<String, String[]>) map;
+    //------------------Constructor------------------
+    public Stations(int id, String name, float longitude, float latitude) {
+        this.id = id;
+        this.name = name;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    //------------------Getters------------------
+    public float getLongitude() {
+        return longitude;
+    }
+    public float getLatitude() {
+        return latitude;
+    }
+    public int getId () {
+        return id;
+    }
+
+    public String getName () {
+        return name;
+    }
+
+    //------------------Setters------------------
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    //------------------Methods------------------
+
+
+
+    @Override
+    public String toString() {
+        return "Stations{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                '}';
     }
 }
