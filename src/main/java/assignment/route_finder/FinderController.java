@@ -102,7 +102,7 @@ public class FinderController {
 //        GraphNodes.getStationById(stationID.getText());
 
         graphNodes.readLineDefinitions("C:\\Users\\janbi\\IdeaProjects\\Route_Finder\\src\\main\\java\\London\\csv\\Lines.csv");
-
+        graphNodes.createLineDefenitionsGraph(GraphNodes.lineArray);
 //        graphNodes.buildStationsHashMaps(Stations.readCsv("/Users/danze/Desktop/London.csv"));
 //        HashMap<Integer, List<String>> stations =
 //

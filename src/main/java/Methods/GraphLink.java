@@ -6,7 +6,7 @@ public class GraphLink<GraphNode> {
     int lineId;
 
     //------------------Constructor------------------
-    public GraphLink(int stationId, int lineId) {
+    public GraphLink(GraphNode station, int lineId) {
         this.stationId = stationId;
         //this.cost = cost;
         this.lineId = lineId;
@@ -41,9 +41,9 @@ public class GraphLink<GraphNode> {
 
     //---------------Methods----------------
     public void addLink(int station1Id, int station2Id, int lineId) {
-        station1Id.co
+//        station1Id.co
     }
-    public void connectStations(GraphNodes<T> destination) {
+//    public void connectStations(GraphNodes<T> destination) {
 
-    }
+//    }
 }

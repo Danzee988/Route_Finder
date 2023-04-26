@@ -15,7 +15,7 @@ public class GraphNodes<T> {
      HashMap<String, GraphNodes<T>> stationsNameHashMap = new HashMap<>();
 
     static List<Stations> result = new ArrayList<Stations>();
-    static List<Object> lineArray = new ArrayList<>();
+    public static List<Object> lineArray = new ArrayList<>();
 
     public List<GraphNodes<T>> adjacentNodes = new ArrayList<>();
 
@@ -68,7 +68,7 @@ public class GraphNodes<T> {
             }
         }
         br.close();
-        System.out.println(lineArray);
+//        System.out.println(lineArray);
         return lineArray;
     }
 
@@ -105,19 +105,22 @@ public class GraphNodes<T> {
         return info;
     }
 
+
+
     public void createLineDefenitionsGraph(List<LineDefinition> lineDefinitions){
         for (LineDefinition lineDefinition : lineDefinitions) {
             int expectedStation1 = lineDefinition.getStation1ID();
             int expectedStation2 = lineDefinition.getStation2ID();
             int expectedLine = lineDefinition.getLineID();
 
-            GraphNodes<Stations> station1 = stationsIdHashMap.get(expectedStation1);
-            GraphNodes<Stations> station2 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation2);
+            GraphNodes station1 = stationsIdHashMap.get(expectedStation1);
+            GraphNodes station2 = stationsIdHashMap.get(expectedStation2);
 
             GraphLink linkStation1to2 = new GraphLink(station1,expectedLine);
             GraphLink linkStation2to1 = new GraphLink(station2,expectedLine);
 
-            station1.addAdjacentNode(linkStation1to2);
+            station1.adjacentNodes.add(linkStation1to2);
+            System.out.println(adjacentNodes);
         }
     }
 }
