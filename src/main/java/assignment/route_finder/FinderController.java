@@ -1,13 +1,11 @@
 package assignment.route_finder;
 
-import Methods.Sorting;
-import Methods.Stations;
+import Methods.GraphNodes;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
@@ -16,8 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.util.*;
 
 public class FinderController {
 
@@ -100,19 +96,49 @@ public class FinderController {
 
     @FXML
     void findStation(MouseEvent event) throws Exception {
-        Stations stations = new Stations();
-        String station = stationID.getText();
+        GraphNodes graphNodes = new GraphNodes();
+        graphNodes.readCsv("C:\\Users\\janbi\\IdeaProjects\\Route_Finder\\src\\main\\java\\London\\csv\\London.csv");
 
-        HashMap<String, String[]> map = stations.createStationsMap();
+//        GraphNodes.getStationById(stationID.getText());
 
-
-        for (String key : map.keySet()) {
-            System.out.println(key);
-            System.out.println("Station: " + Arrays.toString(map.get(0)) + ", " + Arrays.toString(map.get(3)));
-//            if (Arrays.toString(map.get(key)).contains(station)) {
-//                System.out.println("Key: " + key + ", Value: " + Arrays.toString(map.get(key)));
+        graphNodes.readLineDefinitions("C:\\Users\\janbi\\IdeaProjects\\Route_Finder\\src\\main\\java\\London\\csv\\Lines.csv");
+        graphNodes.createLineDefenitionsGraph(GraphNodes.lineArray);
+//        graphNodes.buildStationsHashMaps(Stations.readCsv("/Users/danze/Desktop/London.csv"));
+//        HashMap<Integer, List<String>> stations =
+//
+//        for (Object key : graphNodes.stationsIdHashMap.keySet()) {
+//            Object str = Arrays.toString(new Object[]{graphNodes.stationsIdHashMap.get(key)});
+//            if (key.equals(stationID.getText())) {
+//                System.out.println("Station: " + str);
 //            }
-        }
+//        }
+//        List<String[]> path = Stations.readCsv("/Users/danze/Desktop/London.csv");
+//        System.out.println(path);
+
+//        for (String[] station : GraphNodes.readCsv("/Users/danze/Desktop/London.csv")) {
+//            System.out.println(Arrays.toString(station));
+////            if (station[3].equals(stationID.getText())) {
+////                Stations.getStationByName(stationID.getText());
+////            }
+//        }
+//        Stations stations = new Stations();
+//        String station = stationID.getText();
+//
+//        HashMap<String, String[]> map = stations.createStationsMap();
+//
+//
+//        for (String key : map.keySet()) {
+//            if (key.equals("15")) {
+//                System.out.println("Station: " + Arrays.toString(map.get(key)));
+//            }
+//        }
+            //System.out.println("Id: " + key + " Name: " + map.get("15"));
+            //System.out.println(key);
+//           // System.out.println("Station: " + Arrays.toString(map.get(0)) + ", " + Arrays.toString(map.get(3)));
+//            if (Arrays.toString(map.get(key)).contains("15")) {
+//                System.out.println("Station: " + Arrays.toString(map.get(3)));
+//            }
+//        }
     }
 
 
