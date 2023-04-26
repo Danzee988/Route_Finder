@@ -1,9 +1,15 @@
 package Methods;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GraphLink<GraphNode> {
     int stationId;
     //int cost;
     int lineId;
+
+    public List<GraphLink<GraphNode>> adjacentNodes = new ArrayList<>();
+
 
     //------------------Constructor------------------
     public GraphLink(GraphNode station, int lineId) {
@@ -46,4 +52,16 @@ public class GraphLink<GraphNode> {
 //    public void connectStations(GraphNodes<T> destination) {
 
 //    }
+
+
+    public void connectToNode(GraphLink<GraphNode> destNode) {
+        adjacentNodes.add(destNode);
+
+    }
+
+    public void displayGraph(GraphLink<GraphNode> from){
+        System.out.println("Recursive depth first traversal starting at Orange");
+        System.out.println("-------------------------------------------------");
+        TraverseGraph.traverseGraphDepthFirst(from, null);
+    }
 }
