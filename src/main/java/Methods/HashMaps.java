@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class HashMaps {
-    HashMap<Integer, GraphNodes<Stations>> stationsIdHashMap = new HashMap<>();
+    static HashMap<Integer, GraphNodes<Stations>> stationsIdHashMap = new HashMap<>();
     HashMap<String, GraphNodes<Stations>> stationsNameHashMap = new HashMap<>();
 
     public void createStationMaps(List<Stations> stations){

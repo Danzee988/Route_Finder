@@ -44,6 +44,8 @@ public class LineDefinition {
         this.lineID = lineID;
     }
 
+    //---------------Methods----------------
+
 
     @Override
     public String toString() {

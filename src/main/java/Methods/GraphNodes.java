@@ -23,10 +23,14 @@ public class GraphNodes<T> {
         this.data = data;
     }
 
-    public void addAdjacentNode(GraphNodes<T> adjacent) {
-        adjacentNodes.add(adjacent);
-        adjacent.adjacentNodes.add(this);
+    public void connectToNode(GraphNodes<T> destNode) {
+        adjacentNodes.add(destNode);
+        destNode.adjacentNodes.add(this);
     }
+
+//    public void addLink(int station1Id, int station2Id, int lineId) {
+//        station1Id.con
+//    }
 
     public List<Stations> readCsv(String path) throws Exception {
         //List<String[]> result = new ArrayList<>();
@@ -99,5 +103,21 @@ public class GraphNodes<T> {
         }
 
         return info;
+    }
+
+    public void createLineDefenitionsGraph(List<LineDefinition> lineDefinitions){
+        for (LineDefinition lineDefinition : lineDefinitions) {
+            int expectedStation1 = lineDefinition.getStation1ID();
+            int expectedStation2 = lineDefinition.getStation2ID();
+            int expectedLine = lineDefinition.getLineID();
+
+            GraphNodes<Stations> station1 = stationsIdHashMap.get(expectedStation1);
+            GraphNodes<Stations> station2 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation2);
+
+            GraphLink linkStation1to2 = new GraphLink(station1,expectedLine);
+            GraphLink linkStation2to1 = new GraphLink(station2,expectedLine);
+
+            station1.addAdjacentNode(linkStation1to2);
+        }
     }
 }
