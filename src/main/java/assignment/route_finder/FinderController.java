@@ -97,10 +97,12 @@ public class FinderController {
     @FXML
     void findStation(MouseEvent event) throws Exception {
         GraphNodes graphNodes = new GraphNodes();
-        graphNodes.readCsv("/Users/danze/Desktop/London.csv");
+        graphNodes.readCsv("C:\\Users\\janbi\\IdeaProjects\\Route_Finder\\src\\main\\java\\London\\csv\\London.csv");
 
-        GraphNodes.getStationById(stationID.getText());
-//
+//        GraphNodes.getStationById(stationID.getText());
+
+        graphNodes.readLineDefinitions("C:\\Users\\janbi\\IdeaProjects\\Route_Finder\\src\\main\\java\\London\\csv\\Lines.csv");
+
 //        graphNodes.buildStationsHashMaps(Stations.readCsv("/Users/danze/Desktop/London.csv"));
 //        HashMap<Integer, List<String>> stations =
 //
