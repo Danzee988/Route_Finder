@@ -5,4 +5,6 @@ module assignment.route_finder {
 
     opens assignment.route_finder to javafx.fxml;
     exports assignment.route_finder;
+    exports Methods;
+    opens Methods to javafx.fxml;
 }
