@@ -15,7 +15,7 @@ public class GraphNodes<T> {
      HashMap<String, GraphNodes<T>> stationsNameHashMap = new HashMap<>();
 
     static List<Stations> result = new ArrayList<Stations>();
-    static List<Object> lineArray = new ArrayList<>();
+    public static List<Object> lineArray = new ArrayList<>();
 
     public List<GraphNodes<T>> adjacentNodes = new ArrayList<>();
 
@@ -66,7 +66,7 @@ public class GraphNodes<T> {
             }
         }
         br.close();
-        System.out.println(lineArray);
+//        System.out.println(lineArray);
         return lineArray;
     }
 
