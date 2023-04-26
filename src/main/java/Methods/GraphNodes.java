@@ -3,8 +3,10 @@ package Methods;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 
 public class GraphNodes<T> {
     public T data;
@@ -13,6 +15,7 @@ public class GraphNodes<T> {
      HashMap<String, GraphNodes<T>> stationsNameHashMap = new HashMap<>();
 
     static List<Stations> result = new ArrayList<Stations>();
+    static List<Object> lineArray = new ArrayList<>();
 
     public List<GraphNodes<T>> adjacentNodes = new ArrayList<>();
 
@@ -42,6 +45,30 @@ public class GraphNodes<T> {
         br.close();
         return result;
     }
+
+
+    public List<Object> readLineDefinitions(String path) throws Exception {
+        //List<String[]> result = new ArrayList<>();
+        BufferedReader br = new BufferedReader(new FileReader(path));
+        String line;
+
+        while ((line = br.readLine()) != null) {
+            String[] values = line.split(",");
+            List<Integer> ln = new ArrayList<>();
+            for (int j = 0; j < values.length; j++) {
+                ln.add(Integer.valueOf(values[j]));
+            }
+
+            if (values.length >= 3) {
+                lineArray.add(ln);
+            }
+        }
+        br.close();
+        System.out.println(lineArray);
+        return lineArray;
+    }
+
+
 
     public static String getStationByName(String name) {
         String info = "";
