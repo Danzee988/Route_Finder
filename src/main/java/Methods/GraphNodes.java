@@ -40,8 +40,6 @@ public class GraphNodes<T> {
         while ((line = br.readLine()) != null) {
             String[] values = line.split(",");
             if (values.length > 4 && ("1".equals(values[4].trim()) || "1.5".equals(values[4].trim()))) {
-//                values[0] = Integer.toString(newId);
-//                newId++;
                 Stations stations = new Stations(Integer.valueOf(values[0]), values[3], Float.valueOf(values[1]), Float.valueOf(values[2]));
                 result.add(stations);
             }
@@ -105,19 +103,38 @@ public class GraphNodes<T> {
         return info;
     }
 
-    public void createLineDefenitionsGraph(List<LineDefinition> lineDefinitions){
+    public void createlineDefinitionGraph(List<LineDefinition> lineDefinitions){
         for (LineDefinition lineDefinition : lineDefinitions) {
             int expectedStation1 = lineDefinition.getStation1ID();
             int expectedStation2 = lineDefinition.getStation2ID();
             int expectedLine = lineDefinition.getLineID();
 
-            GraphNodes<Stations> station1 = stationsIdHashMap.get(expectedStation1);
+            GraphNodes<Stations> station1 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation1);
             GraphNodes<Stations> station2 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation2);
 
             GraphLink linkStation1to2 = new GraphLink(station1,expectedLine);
             GraphLink linkStation2to1 = new GraphLink(station2,expectedLine);
 
-            station1.addAdjacentNode(linkStation1to2);
+            station1.connectToNode(linkStation1to2);
+        }
+    }
+
+    public void createlineDefinitionGraph(List<List<Integer>> lineArray) {
+        for (List<Integer> values : lineArray) {
+            if (values.size() >= 3) {
+                int expectedStation1 = values.get(0);
+                int expectedStation2 = values.get(1);
+                int expectedLine = values.get(2);
+
+                GraphNodes<Stations> station1 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation1);
+                GraphNodes<Stations> station2 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation2);
+
+                GraphLink linkStation1to2 = new GraphLink(station2, expectedLine);
+                GraphLink linkStation2to1 = new GraphLink(station1, expectedLine);
+
+                station1.connectToNode(linkStation1to2);
+                station2.connectToNode(linkStation2to1);
+            }
         }
     }
 }
