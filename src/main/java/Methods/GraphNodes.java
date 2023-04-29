@@ -2,139 +2,59 @@ package Methods;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 public class GraphNodes<T> {
     public T data;
-
-     HashMap<String, GraphNodes<T>> stationsIdHashMap = new HashMap<>();
-     HashMap<String, GraphNodes<T>> stationsNameHashMap = new HashMap<>();
-
-    static List<Stations> result = new ArrayList<Stations>();
-    public static List<Object> lineArray = new ArrayList<>();
-
-    public List<GraphNodes<T>> adjacentNodes = new ArrayList<>();
-
-    public GraphNodes() {
-        this.data = data;
+    public List<GraphNodes<T>> adjList=new ArrayList<>(); //Could use any List implementation
+    public GraphNodes(T data) {
+        this.data=data;
+    }
+//    public void connectToNodeDirected(GraphLink2<T> destNode) {
+//        adjList.add(destNode);
+//    }
+    public void connectToNodeUndirected(GraphNodes<T> destNode) {
+        adjList.add(destNode);
+        destNode.adjList.add(this);
     }
 
-    public void connectToNode(GraphNodes<T> destNode) {
-        adjacentNodes.add(destNode);
-        destNode.adjacentNodes.add(this);
-    }
 
-//    public void addLink(int station1Id, int station2Id, int lineId) {
-//        station1Id.con
+
+//    public void createlineDefinitionGraph(List<LineDefinition> lineDefinitions, Map<Integer, GraphNodes<Stations>> stationsIdHashMap) {
+//        for (LineDefinition lineDefinition : lineDefinitions) {
+//            int expectedStation1 = lineDefinition.getStation1ID();
+//            int expectedStation2 = lineDefinition.getStation2ID();
+//            int expectedLine = lineDefinition.getLineID();
+//
+//            GraphNodes<Stations> station1 = stationsIdHashMap.get(expectedStation1);
+//            GraphNodes<Stations> station2 = stationsIdHashMap.get(expectedStation2);
+//
+//            GraphLink linkStation1to2 = new GraphLink<>(station2, expectedLine);
+//            GraphLink linkStation2to1 = new GraphLink<>(station1, expectedLine);
+//
+//            station1.connectToNode(linkStation1to2);
+//            station2.connectToNode(linkStation2to1);
+//        }
 //    }
 
-    public List<Stations> readCsv(String path) throws Exception {
-        //List<String[]> result = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new FileReader(path));
-        String line;
-        //int newId = 1;
-        while ((line = br.readLine()) != null) {
-            String[] values = line.split(",");
-            if (values.length > 4 && ("1".equals(values[4].trim()) || "1.5".equals(values[4].trim()))) {
-                Stations stations = new Stations(Integer.valueOf(values[0]), values[3], Float.valueOf(values[1]), Float.valueOf(values[2]));
-                result.add(stations);
-            }
-        }
-        br.close();
-        return result;
-    }
 
-
-    public List<Object> readLineDefinitions(String path) throws Exception {
-        //List<String[]> result = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new FileReader(path));
-        String line;
-
-        while ((line = br.readLine()) != null) {
-            String[] values = line.split(",");
-            List<Integer> ln = new ArrayList<>();
-            for (int j = 0; j < values.length; j++) {
-                ln.add(Integer.valueOf(values[j]));
-            }
-
-            if (values.length >= 3) {
-                lineArray.add(ln);
-            }
-        }
-        br.close();
-//        System.out.println(lineArray);
-        return lineArray;
-    }
-
-
-
-    public static String getStationByName(String name) {
-        String info = "";
-        boolean printed = false;
-        for (int i = 0; i < result.size(); i++) {
-            if (result.get(i).getName().equals(name)) { // Assuming the station name is stored in the second column
-                if(!printed) {
-                    System.out.println(result.get(i));
-                    info = result.get(i).toString();
-                }
-            }
-        }
-        return info;
-    }
-
-    public static String getStationById(String id) {
-        boolean printed = false;
-        String info = "";
-        for (int i = 0; i < result.size(); i++) {
-            int stn = result.get(i).getId();
-            if (stn == Integer.valueOf(id)) { // Assuming the station name is stored in the second column
-                if(!printed) {
-                    System.out.println(result.get(i));
-                    info = result.get(i).toString();
-                }
-                printed = true;
-            }
-        }
-
-        return info;
-    }
-
-    public void createlineDefinitionGraph(List<LineDefinition> lineDefinitions){
-        for (LineDefinition lineDefinition : lineDefinitions) {
-            int expectedStation1 = lineDefinition.getStation1ID();
-            int expectedStation2 = lineDefinition.getStation2ID();
-            int expectedLine = lineDefinition.getLineID();
-
-            GraphNodes<Stations> station1 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation1);
-            GraphNodes<Stations> station2 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation2);
-
-            GraphLink linkStation1to2 = new GraphLink(station1,expectedLine);
-            GraphLink linkStation2to1 = new GraphLink(station2,expectedLine);
-
-            station1.connectToNode(linkStation1to2);
-        }
-    }
-
-    public void createlineDefinitionGraph(List<List<Integer>> lineArray) {
-        for (List<Integer> values : lineArray) {
-            if (values.size() >= 3) {
-                int expectedStation1 = values.get(0);
-                int expectedStation2 = values.get(1);
-                int expectedLine = values.get(2);
-
-                GraphNodes<Stations> station1 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation1);
-                GraphNodes<Stations> station2 = (GraphNodes<Stations>) stationsIdHashMap.get(expectedStation2);
-
-                GraphLink linkStation1to2 = new GraphLink(station2, expectedLine);
-                GraphLink linkStation2to1 = new GraphLink(station1, expectedLine);
-
-                station1.connectToNode(linkStation1to2);
-                station2.connectToNode(linkStation2to1);
-            }
-        }
-    }
+//    public void createlineDefinitionGraph(List<List<Integer>> lineArray) {
+//        for (List<Integer> values : lineArray) {
+//            if (values.size() >= 3) {
+//                int expectedStation1 = values.get(0);
+//                int expectedStation2 = values.get(1);
+//                int expectedLine = values.get(2);
+//
+//                GraphNodes<Stations> station1 = stationsIdHashMap.get(expectedStation1);
+//                GraphNodes<Stations> station2 = stationsIdHashMap.get(expectedStation2);
+//
+//                GraphLink linkStation1to2 = new GraphLink(station2, expectedLine);
+//                GraphLink linkStation2to1 = new GraphLink(station1, expectedLine);
+//
+//                station1.connectToNode(linkStation1to2);
+//                station2.connectToNode(linkStation2to1);
+//            }
+//        }
+//    }
 }

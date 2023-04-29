@@ -12,6 +12,11 @@ public class LineDefinition {
         this.lineID = lineID;
     }
 
+    public LineDefinition(int station1ID, int station2ID) {
+        this.station1ID = station1ID;
+        this.station2ID = station2ID;
+    }
+
 
 
     //----------------Getters----------------
