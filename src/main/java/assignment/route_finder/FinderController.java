@@ -17,10 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //import static Methods.GraphTraversal.traverseGraphDepthFirst;
 
@@ -172,6 +169,7 @@ public class FinderController {
             //GraphNode ----------------------------------------------
             for (int i = 0; i < stationList.size(); i++) {
                 if (stationList.get(i).data.getId() == station1) {
+                    System.out.println(stationList.get(i).data + " IN SIDE LOOP");
                     station1Node = stationList.get(i);
 
                 }
@@ -181,43 +179,35 @@ public class FinderController {
             }
             //System.out.println(station1Node.data);
             //-------------------------------------------------------
-            GraphLink2<Stations> first = new GraphLink2<>(station1Node, lineNum);
-            GraphLink2<Stations> second = new GraphLink2<>(station2Node, lineNum);
+            GraphNodes<Stations> first = new GraphNodes(station1Node, lineNum);
+            GraphNodes<Stations> second = new GraphNodes(station2Node, lineNum);
 
-            if (!lineMap.containsKey(lineNum)) {
-                lineMap.put(lineNum, new ArrayList<GraphNodes<Stations>>());
-            }
-            lineMap.get(lineNum).add(station1Node);
-            lineMap.get(lineNum).add(station2Node);
-
-            station1Node.connectToNodeUndirected(first);
-            station2Node.connectToNodeUndirected(second);
-
-            GraphNodes graphNodes = new GraphNodes(station1Node);
-            System.out.println(graphNodes.adjList + " HERE ");
-            // Get a list of stations for line number 1
-            List<GraphNodes<Stations>> stationsForLine1 = lineMap.get(1);
-
-            // Loop through the stations and print their names
-//            for (GraphNodes<Stations> station : stationsForLine1) {
-//                System.out.println(station.data.getName());
+//            if (!lineMap.containsKey(lineNum)) {
+//                lineMap.put(lineNum, new ArrayList<GraphNodes<Stations>>());
 //            }
+//            if (!lineMap.get(lineNum).contains(station1Node) && !lineMap.get(lineNum).contains(station2Node)) {
+//                lineMap.get(lineNum).add(lineNum, new ArrayList<>(first));
+//                lineMap.get(lineNum).add(second);
+//            }
+            station1Node.connectToNodeUndirected(second);
+            station2Node.connectToNodeUndirected(first);
+
+//            System.out.println("Recursive depth first traversal starting at Orange");
+//            System.out.println("-------------------------------------------------");
+//            traverseGraphDepthFirst(station1Node.adjList.get(1), new ArrayList<>());
+
         }
+        System.out.println(station1Node.data + " OUTSIDE LOOP");
+
     }
 
-//    public static void traverseGraphDepthFirst(GraphNodes<Stations> from, List<GraphNodes<Stations>> encountered) {
-//        System.out.println(from.data);
-//        if (encountered == null) {
-//            encountered = new ArrayList<>();
-//        }
-//        encountered.add(from);
-//        for (GraphLink2<Stations> adjLink : from.adjList) {
-//            GraphNodes<Stations> adjNode = adjLink.getDestination();
-//            if (!encountered.contains(adjNode)) {
-//                traverseGraphDepthFirst(adjNode, encountered);
-//            }
-//        }
-//    }
+        public static void traverseGraphDepthFirst(GraphNodes<?> from, List<GraphNodes<?>> encountered ){
+            System.out.println(from.data);
+            if(encountered==null) encountered=new ArrayList<>(); //First node so create new (empty) encountered list
+            encountered.add(from);
+            for(GraphNodes<?> adjNode : from.adjList)
+                if(!encountered.contains(adjNode)) traverseGraphDepthFirst(adjNode, encountered );
+        }
 
 
 
