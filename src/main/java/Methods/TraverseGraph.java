@@ -5,13 +5,13 @@ import java.util.List;
 
 public class TraverseGraph {
     //Regular recursive depth-first graph traversal
-    public static void traverseGraphDepthFirst(GraphLink<?> from, List<GraphLink<?>> encountered ){
-        System.out.println(from.adjacentNodes);
-        if(encountered==null) encountered=new ArrayList<>(); //First node so create new (empty) encountered list
-        encountered.add(from);
-        for(GraphLink<?> adjNode : from.adjacentNodes)
-            if(!encountered.contains(adjNode)) traverseGraphDepthFirst(adjNode, encountered );
-    }
+//    public static void traverseGraphDepthFirst(GraphLink<?> from, List<GraphLink<?>> encountered ){
+//        System.out.println(from.adjacentNodes);
+//        if(encountered==null) encountered=new ArrayList<>(); //First node so create new (empty) encountered list
+//        encountered.add(from);
+//        for(GraphLink<?> adjNode : from.adjacentNodes)
+//            if(!encountered.contains(adjNode)) traverseGraphDepthFirst(adjNode, encountered );
+//    }
 
     //Agenda list based breadth-first graph traversal (tail recursive)
 //    public static void traverseGraphBreadthFirst(List<GraphNodeAL<?>> agenda, List<GraphNodeAL<?>> encountered ){

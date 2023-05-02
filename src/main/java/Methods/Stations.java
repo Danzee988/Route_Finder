@@ -19,6 +19,11 @@ public class Stations {
         this.latitude = latitude;
     }
 
+//    public Stations(int id, String name) {
+//        this.id = id;
+//        this.name = name;
+//    }
+
     //------------------Getters------------------
     public float getLongitude() {
         return longitude;
