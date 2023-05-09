@@ -3,7 +3,7 @@ package Methods;
 import java.util.*;
 
 public class Stations {
-    static List<String[]> result = new ArrayList<>();
+
     int id;
     String name;
 
