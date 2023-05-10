@@ -1,9 +1,9 @@
 package Methods;
 
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 
-public class GraphTraversal {
+//public class GraphTraversal {
 //    public static void traverseGraphDepthFirst(GraphNodes<?> from, List<GraphNodes<?>> encountered ){
 //        System.out.println(from.data);
 //        if(encountered==null) encountered=new ArrayList<>(); //First node so create new (empty) encountered list
@@ -35,4 +35,4 @@ public class GraphTraversal {
 //    }
 
 
-}
+//}

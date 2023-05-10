@@ -1,11 +1,11 @@
-package Methods;
-
-import java.util.HashMap;
-import java.util.List;
-
-public class HashMaps {
-    static HashMap<Integer, GraphNodes<Stations>> stationsIdHashMap = new HashMap<>();
-    HashMap<String, GraphNodes<Stations>> stationsNameHashMap = new HashMap<>();
+//package Methods;
+//
+//import java.util.HashMap;
+//import java.util.List;
+//
+//public class HashMaps {
+//    static HashMap<Integer, GraphNodes<Stations>> stationsIdHashMap = new HashMap<>();
+//    HashMap<String, GraphNodes<Stations>> stationsNameHashMap = new HashMap<>();
 
 //    public void createStationMaps(List<Stations> stations){
 //        for (Stations station : stations) {
@@ -32,4 +32,4 @@ public class HashMaps {
 //            stationsNameHashMap.put(name, stationsGraph);
 //        }
 //    }
-}
+//}

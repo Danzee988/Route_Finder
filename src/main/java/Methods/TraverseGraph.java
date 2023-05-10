@@ -1,9 +1,9 @@
-package Methods;
+//package Methods;
 
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 
-public class TraverseGraph {
+//public class TraverseGraph {
     //Regular recursive depth-first graph traversal
 //    public static void traverseGraphDepthFirst(GraphLink<?> from, List<GraphLink<?>> encountered ){
 //        System.out.println(from.adjacentNodes);
@@ -36,4 +36,4 @@ public class TraverseGraph {
 //            if(!encountered.contains(adjNode) && !agenda.contains(adjNode)) agenda.add( 0 ,adjNode); //Add children to
 ////front of agenda (order unimportant here)
 //        traverseGraphDepthFirst(agenda, encountered ); //Tail call
-}
+//}
