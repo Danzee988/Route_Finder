@@ -1,6 +1,5 @@
 package assignment.route_finder;
 
-import Methods.GraphLink2;
 import Methods.GraphNodes;
 import Methods.LineDefinition;
 import Methods.Stations;
@@ -102,31 +101,47 @@ public class FinderController {
 
     public static List<GraphNodes<Stations>> stationList = new ArrayList<>();
 
-    public static List<GraphLink2<LineDefinition>> lineArray = new ArrayList<>();
+//    public static List<GraphLink2<LineDefinition>> lineArray = new ArrayList<>();
 
     public static HashMap<Integer, ArrayList<GraphNodes<Stations>>> lineMap = new HashMap<Integer, ArrayList<GraphNodes<Stations>>>();
 
 
     @FXML
     void findStation(MouseEvent event) throws Exception {
-        readCsv("src\\main\\java\\London\\csv\\London.csv");
+        readStationCsv("src\\main\\java\\London\\csv\\London.csv");
 //        for (int i = 0; i < stationList.size(); i++) {
 //            System.out.println(stationList.get(i).data);
 //        }
+        System.out.println(stationList.get(0).data.toString());
 
-
-        readLineDefinitions("src\\main\\java\\London\\csv\\Lines.csv");
+        populateStationAdjList("src\\main\\java\\London\\csv\\Lines.csv");
 
 //        for (int i = 0; i < lineArray.size(); i++) {
 //            System.out.println(lineArray.get(i).data.getStation1ID());
 //        }
-        createLines(lineArray);
+//        createLines(lineArray);
 
     }
 
     //--------------------------------------Methods--------------------------------------
 
-    public List<GraphNodes<Stations>> readCsv(String path) throws Exception {
+//    public List<GraphNodes<Stations>> readCsv(String path) throws Exception {
+//        BufferedReader br = new BufferedReader(new FileReader(path));
+//        String line;
+//        //int newId = 1;
+//        while ((line = br.readLine()) != null) {
+//            String[] values = line.split(",");
+//            if (values.length > 4 && ("1".equals(values[4].trim()) || "1.5".equals(values[4].trim()))) {
+//                Stations stn = new Stations(Integer.valueOf(values[0]), values[3], Float.valueOf(values[1]), Float.valueOf(values[2]));
+//                GraphNodes<Stations> stn1 = new GraphNodes<>(stn);
+//                stationList.add(stn1);
+//            }
+//        }
+//        br.close();
+//        return stationList;
+//    }
+
+    public void readStationCsv(String path) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(path));
         String line;
         //int newId = 1;
@@ -139,67 +154,91 @@ public class FinderController {
             }
         }
         br.close();
-        return stationList;
+
     }
 
-
-    public List<GraphLink2<LineDefinition>> readLineDefinitions(String path) throws Exception {
+    public void populateStationAdjList(String path) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(path));
         String line;
 
         while ((line = br.readLine()) != null) {
             String[] values = line.split(",");
-            LineDefinition lineDef = new LineDefinition(Integer.valueOf(values[0]), Integer.valueOf(values[1]),Integer.valueOf(values[2]));
-            GraphLink2<LineDefinition> info = new GraphLink2<>(lineDef);
-            lineArray.add(info);
-        }
-        br.close();
-        return lineArray;
-    }
-
-    public void createLines(List<GraphLink2<LineDefinition>> lineDefinitions){
-        GraphNodes<Stations> station1Node = null;
-        GraphNodes<Stations> station2Node = null;
-
-        for (GraphLink2<LineDefinition> connection : lineDefinitions) {
-            int station1 = connection.data.getStation1ID();
-            int station2 = connection.data.getStation2ID();
-            int lineNum = connection.data.getLineID();
-
-            //GraphNode ----------------------------------------------
-            for (int i = 0; i < stationList.size(); i++) {
-                if (stationList.get(i).data.getId() == station1) {
-                    System.out.println(stationList.get(i).data + " IN SIDE LOOP");
-                    station1Node = stationList.get(i);
-
+            int srcId = Integer.valueOf(values[0]);
+            int destId = Integer.valueOf(values[1]);
+            GraphNodes<Stations> srcNode = null;
+            GraphNodes<Stations> destNode = null;
+            for (GraphNodes<Stations> node : stationList) {
+                if (node.data.getId() == srcId) {
+                    srcNode = node;
                 }
-                if (stationList.get(i).data.getId() == station2) {
-                    station2Node = stationList.get(i);
+                if (node.data.getId() == destId) {
+                    destNode = node;
                 }
             }
-            //System.out.println(station1Node.data);
-            //-------------------------------------------------------
-            GraphNodes<Stations> first = new GraphNodes(station1Node, lineNum);
-            GraphNodes<Stations> second = new GraphNodes(station2Node, lineNum);
-
-//            if (!lineMap.containsKey(lineNum)) {
-//                lineMap.put(lineNum, new ArrayList<GraphNodes<Stations>>());
-//            }
-//            if (!lineMap.get(lineNum).contains(station1Node) && !lineMap.get(lineNum).contains(station2Node)) {
-//                lineMap.get(lineNum).add(lineNum, new ArrayList<>(first));
-//                lineMap.get(lineNum).add(second);
-//            }
-            station1Node.connectToNodeUndirected(second);
-            station2Node.connectToNodeUndirected(first);
-
-//            System.out.println("Recursive depth first traversal starting at Orange");
-//            System.out.println("-------------------------------------------------");
-//            traverseGraphDepthFirst(station1Node.adjList.get(1), new ArrayList<>());
-
+            if(srcNode != null && destNode != null){
+               srcNode.connectToNodeUndirected(destNode);
+            }
         }
-        System.out.println(station1Node.data + " OUTSIDE LOOP");
+        br.close();
 
     }
+//    public List<GraphLink2<LineDefinition>> readLineDefinitions(String path) throws Exception {
+//        BufferedReader br = new BufferedReader(new FileReader(path));
+//        String line;
+//
+//        while ((line = br.readLine()) != null) {
+//            String[] values = line.split(",");
+//            LineDefinition lineDef = new LineDefinition(Integer.valueOf(values[0]), Integer.valueOf(values[1]),Integer.valueOf(values[2]));
+//            GraphLink2<LineDefinition> info = new GraphLink2<>(lineDef);
+//            lineArray.add(info);
+//        }
+//        br.close();
+//        return lineArray;
+//    }
+//
+//    public void createLines(List<GraphLink2<LineDefinition>> lineDefinitions){
+//        GraphNodes<Stations> station1Node = null;
+//        GraphNodes<Stations> station2Node = null;
+//
+//        for (GraphLink2<LineDefinition> connection : lineDefinitions) {
+//            int station1 = connection.data.getStation1ID();
+//            int station2 = connection.data.getStation2ID();
+//            int lineNum = connection.data.getLineID();
+//
+//            //GraphNode ----------------------------------------------
+//            for (int i = 0; i < stationList.size(); i++) {
+//                if (stationList.get(i).data.getId() == station1) {
+//                    System.out.println(stationList.get(i).data + " IN SIDE LOOP");
+//                    station1Node = stationList.get(i);
+//
+//                }
+//                if (stationList.get(i).data.getId() == station2) {
+//                    station2Node = stationList.get(i);
+//                }
+//            }
+//            //System.out.println(station1Node.data);
+//            //-------------------------------------------------------
+//            GraphNodes<Stations> first = new GraphNodes(station1Node, lineNum);
+//            GraphNodes<Stations> second = new GraphNodes(station2Node, lineNum);
+//
+////            if (!lineMap.containsKey(lineNum)) {
+////                lineMap.put(lineNum, new ArrayList<GraphNodes<Stations>>());
+////            }
+////            if (!lineMap.get(lineNum).contains(station1Node) && !lineMap.get(lineNum).contains(station2Node)) {
+////                lineMap.get(lineNum).add(lineNum, new ArrayList<>(first));
+////                lineMap.get(lineNum).add(second);
+////            }
+//            station1Node.connectToNodeUndirected(second);
+//            station2Node.connectToNodeUndirected(first);
+//
+////            System.out.println("Recursive depth first traversal starting at Orange");
+////            System.out.println("-------------------------------------------------");
+////            traverseGraphDepthFirst(station1Node.adjList.get(1), new ArrayList<>());
+//
+//        }
+//        System.out.println(station1Node.data + " OUTSIDE LOOP");
+//
+//    }
 
         public static void traverseGraphDepthFirst(GraphNodes<?> from, List<GraphNodes<?>> encountered ){
             System.out.println(from.data);
