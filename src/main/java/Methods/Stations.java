@@ -1,6 +1,5 @@
 package Methods;
 
-import java.util.*;
 
 public class Stations {
 
@@ -64,11 +63,11 @@ public class Stations {
 
     @Override
     public String toString() {
-        return "Stations{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", longitude=" + longitude +
-                ", latitude=" + latitude +
-                '}';
+        return "Stations{ " +
+                "id= " + id +
+                ", name= " + name +
+                ", longitude= " + longitude +
+                ", latitude= " + latitude +
+                " }";
     }
 }

@@ -69,16 +69,19 @@
       </VBox>
       <StackPane layoutX="258.0" prefHeight="576.0" prefWidth="793.0" style="-fx-background-color: #02030A;">
          <children>
-            <Pane fx:id="pnlMain" layoutX="10.0" layoutY="10.0" maxHeight="800.0" maxWidth="1000.0" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0">
+            <Pane fx:id="pnlMain" layoutX="10.0" layoutY="10.0" maxHeight="800.0" maxWidth="1000.0" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" stylesheets="@style.css">
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="460.0" layoutX="30.0" layoutY="74.0" stroke="BLACK" strokeType="INSIDE" width="460.0" />
-                  <ComboBox fx:id="selectImage" layoutX="322.0" layoutY="32.0" onMouseClicked="#pickImg" prefWidth="150.0" promptText="Select Image" />
+                  <ComboBox id="btnBrighter" fx:id="selectImage" layoutX="322.0" layoutY="32.0" onMouseClicked="#pickImg" prefWidth="150.0" promptText="Select Image" stylesheets="@style.css" />
                   <ImageView fx:id="map" fitHeight="440.0" fitWidth="440.0" layoutX="40.0" layoutY="84.0" pickOnBounds="true" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="300.0" layoutX="663.0" layoutY="74.0" stroke="BLACK" strokeType="INSIDE" width="300.0" />
                   <ImageView fx:id="scanndedMap" fitHeight="280.0" fitWidth="280.0" layoutX="673.0" layoutY="84.0" pickOnBounds="true" />
-                  <Button layoutX="149.0" layoutY="570.0" mnemonicParsing="false" onMouseClicked="#findStation" text="Select Station" />
-                  <TextField fx:id="stationID" layoutX="30.0" layoutY="570.0" prefHeight="25.0" prefWidth="88.0" />
+                  <Button layoutX="149.0" layoutY="570.0" mnemonicParsing="false" onMouseClicked="#findStation" stylesheets="@style.css" text="Read Stations" />
+                  <TextField fx:id="stationID" layoutX="40.0" layoutY="569.0" prefHeight="25.0" prefWidth="88.0" style="-fx-background-color: #02030A; -fx-border-color: #B7C3D7; -fx-border-radius: 2em;" stylesheets="@style.css" />
                   <Text fill="WHITE" layoutX="30.0" layoutY="566.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter the station Name" />
+                  <ComboBox id="btnBrighter" fx:id="startStn" layoutX="30.0" layoutY="617.0" prefHeight="25.0" prefWidth="173.0" promptText="Start" stylesheets="@style.css" />
+                  <ComboBox id="btnBrighter" fx:id="destinationStn" layoutX="218.0" layoutY="617.0" prefHeight="25.0" prefWidth="173.0" promptText="Destination" stylesheets="@style.css" />
+                  <Button layoutX="411.0" layoutY="617.0" mnemonicParsing="false" onMouseClicked="#takeRoute" prefHeight="25.0" prefWidth="82.0" stylesheets="@style.css" text="Take Route" />
                </children>
             </Pane>
             <Pane fx:id="pnlProcess" prefHeight="200.0" prefWidth="200.0" visible="false" />

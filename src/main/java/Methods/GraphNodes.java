@@ -1,23 +1,21 @@
 package Methods;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.*;
 
 
 public class GraphNodes<T> {
-    public T data;
+    public T station;
 
     private int line;
 
     public List<GraphNodes<T>> adjList=new ArrayList<>(); //Could use any List implementation
     public GraphNodes(T data) {
 
-        this.data=data;
+        this.station =data;
     }
 
     public GraphNodes(T data, int line) {
-        this.data=data;
+        this.station =data;
         this.line = line;
     }
 //    public void connectToNodeDirected(GraphLink2<T> destNode) {
@@ -33,9 +31,14 @@ public class GraphNodes<T> {
         destNode.adjList.add(this);
     }
 
+    @Override
+    public String toString() {
+        return "GraphNodes{ " +
+                station +
+                "}";
+    }
 
-
-//    public void createlineDefinitionGraph(List<LineDefinition> lineDefinitions, Map<Integer, GraphNodes<Stations>> stationsIdHashMap) {
+    //    public void createlineDefinitionGraph(List<LineDefinition> lineDefinitions, Map<Integer, GraphNodes<Stations>> stationsIdHashMap) {
 //        for (LineDefinition lineDefinition : lineDefinitions) {
 //            int expectedStation1 = lineDefinition.getStation1ID();
 //            int expectedStation2 = lineDefinition.getStation2ID();

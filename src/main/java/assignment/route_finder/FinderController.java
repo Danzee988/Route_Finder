@@ -49,6 +49,13 @@ public class FinderController {
     @FXML
     private ComboBox<?> selectImage;
 
+    @FXML
+    private ComboBox<String> startStn;
+
+    @FXML
+    private ComboBox<String> destinationStn;
+
+
     public void handleClicks(ActionEvent actionEvent) throws IOException {//side panel with buttons each button corresponds to displaying a panel
         if (actionEvent.getSource() == btnMain) {
             pnlMain.setVisible(true);
@@ -117,7 +124,10 @@ public class FinderController {
 
         populateStationAdjList("src\\main\\java\\London\\csv\\Lines.csv");
 
-
+//        System.out.println("Recursive depth first traversal starting at Orange");
+//        System.out.println("-------------------------------------------------");
+//        traverseGraphDepthFirst(stationList.get(1),null);
+        System.out.println(stationList.toString());
     }
 
     //--------------------------------------Methods--------------------------------------
@@ -148,10 +158,11 @@ public class FinderController {
                 Stations stn = new Stations(Integer.valueOf(values[0]), values[3], Float.valueOf(values[1]), Float.valueOf(values[2]));
                 GraphNodes<Stations> stn1 = new GraphNodes<>(stn);
                 stationList.add(stn1);
+                startStn.getItems().add(values[3]);
+                destinationStn.getItems().add(values[3]);
             }
         }
         br.close();
-
     }
 
     public void populateStationAdjList(String path) throws Exception {              //populates the adjacency list with line definitions CSV
@@ -167,10 +178,10 @@ public class FinderController {
             GraphNodes<Stations> startNode = null;
             GraphNodes<Stations> destNode = null;
             for (GraphNodes<Stations> node : stationList) {                         //finds the start and destination nodes
-                if (node.data.getId() == startId) {
+                if (node.station.getId() == startId) {
                     startNode = node;
                 }
-                if (node.data.getId() == destId) {
+                if (node.station.getId() == destId) {
                     destNode = node;
                 }
             }
@@ -181,7 +192,7 @@ public class FinderController {
             // Find the line number of the current station
             int stationLineNum = -1;
             for (GraphNodes<Stations> node : stationList) {                         //finds the start and destination nodes
-                if (node.data.getId() == startId) {
+                if (node.station.getId() == startId) {
                     stationLineNum = lineNum;
                     break;
                 }
@@ -194,8 +205,8 @@ public class FinderController {
                     lineStations = new ArrayList<>();
                     lineMap.put(stationLineNum, lineStations);                      //add the new list to the map
                 }
-                Stations station1 = startNode.data;
-                Stations station2 = destNode != null ? destNode.data : null;
+                Stations station1 = startNode.station;
+                Stations station2 = destNode != null ? destNode.station : null;
 
                 if (!lineStations.contains(station1)) {                             //if the list doesn't contain the station, add it
                     lineStations.add(station1);
@@ -207,11 +218,22 @@ public class FinderController {
         }
 
         br.close();
-        for (Map.Entry<Integer, List<Stations>> entry : lineMap.entrySet()) {
-            System.out.println(entry.getValue().size());
-        }
+//        for (Map.Entry<Integer, List<Stations>> entry : lineMap.entrySet()) {
+//            System.out.println(entry.getKey());
+//            System.out.println(entry.getValue().toString());
+//        }
 
     }
+
+    //travers the route from one station to the next
+    public void takeRoute(){
+        int i = startStn.getSelectionModel().getSelectedIndex();
+//        GraphNodes<Stations> startNode = stationList.get(i);
+        findLine();
+
+    }
+
+
 
 //    public List<GraphLink2<LineDefinition>> readLineDefinitions(String path) throws Exception {
 //        BufferedReader br = new BufferedReader(new FileReader(path));
@@ -271,13 +293,74 @@ public class FinderController {
 //
 //    }
 
-        public static void traverseGraphDepthFirst(GraphNodes<?> from, List<GraphNodes<?>> encountered ){
-            System.out.println(from.data);
-            if(encountered==null) encountered=new ArrayList<>(); //First node so create new (empty) encountered list
-            encountered.add(from);
-            for(GraphNodes<?> adjNode : from.adjList)
-                if(!encountered.contains(adjNode)) traverseGraphDepthFirst(adjNode, encountered );
+    //find the line that the two stations are on
+    public void findLine(){
+        int i = startStn.getSelectionModel().getSelectedIndex();
+        int j = destinationStn.getSelectionModel().getSelectedIndex();
+        GraphNodes<Stations> startNode = stationList.get(i);
+        GraphNodes<Stations> destNode = stationList.get(j);
+        List<Stations> line = new ArrayList<>();
+        for(int k = 0; k < lineMap.size(); k++){
+            if(lineMap.get(k) != null) {
+                for (int l = 0; l < lineMap.get(k).size(); l++) {
+                    if (lineMap.get(k).get(l).getId() == startNode.station.getId()) {
+                        for(int m = 0; m < lineMap.get(k).size(); m++){
+                            if(lineMap.get(k).get(m).getId() == destNode.station.getId()){
+                                line = lineMap.get(k);
+                            }
+                        }
+                    }
+                }
+            }
         }
+        goStationToStationOnOneLine(startNode, destNode, null, line);
+    }
+
+    //traverse graph from one station to the next
+    public void goStationToStationOnOneLine(GraphNodes<?> from, GraphNodes<?> to, List<GraphNodes<?>> encountered, List<Stations> line){
+        System.out.println(from.station);
+        if (encountered == null)
+            encountered = new ArrayList<>(); //First node so create new (empty) encountered list
+        encountered.add(from);
+
+
+        List<GraphNodes<?>> path = new ArrayList<>();
+
+        GraphNodes<?> start = encountered.get(0);
+
+        for (GraphNodes<?> adjNode : from.adjList) {
+            if (line.contains(adjNode.station)) {
+                path.add(adjNode);
+                if (adjNode.station == to.station) {
+                    System.out.println("Destination Node: " + adjNode.station);
+                    encountered.add(adjNode);
+                    System.out.println("Route: " + encountered);
+//                    for (int i = 0; i < encountered.size(); i++) {
+//                        if(start.adjList.contains(encountered.get(i))){
+//                            direction1.add(encountered.get(i));
+//                        }
+//                        else{
+//                            direction2.add(encountered.get(i));
+//                        }
+//                    }
+                    break;
+                } else if (!encountered.contains(adjNode))
+                    goStationToStationOnOneLine(adjNode, to, encountered, line);
+            }
+        }
+        System.out.println("Route: " + path);
+    }
+
+
+
+    public static void traverseGraphDepthFirst(GraphNodes<?> from, List<GraphNodes<?>> encountered ) {
+        System.out.println(from.station);
+        if (encountered == null)
+            encountered = new ArrayList<>(); //First node so create new (empty) encountered list
+        encountered.add(from);
+        for (GraphNodes<?> adjNode : from.adjList)
+            if (!encountered.contains(adjNode)) traverseGraphDepthFirst(adjNode, encountered);
+    }
 
 
 
@@ -286,7 +369,7 @@ public class FinderController {
         String info = "";
         boolean printed = false;
         for (int i = 0; i < stationList.size(); i++) {
-            if (stationList.get(i).data.getName().contains(name)) {
+            if (stationList.get(i).station.getName().contains(name)) {
                 if(!printed) {
                     System.out.println(stationList.get(i));
                     info = stationList.get(i).toString();
@@ -300,7 +383,7 @@ public class FinderController {
         boolean printed = false;
         String info = "";
         for (int i = 0; i < stationList.size(); i++) {
-            int stn = stationList.get(i).data.getId();
+            int stn = stationList.get(i).station.getId();
             if (stn == Integer.valueOf(id)) {
                 if(!printed) {
                     System.out.println(stationList.get(i));
