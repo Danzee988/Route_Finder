@@ -101,25 +101,22 @@ public class FinderController {
 
     public static List<GraphNodes<Stations>> stationList = new ArrayList<>();
 
+    Map<Integer, List<Stations>> lineMap = new HashMap<>();
+
+
+//    public static List<GraphNodes<Stations>> lineList = new ArrayList<>();
+
 //    public static List<GraphLink2<LineDefinition>> lineArray = new ArrayList<>();
 
-    public static HashMap<Integer, ArrayList<GraphNodes<Stations>>> lineMap = new HashMap<Integer, ArrayList<GraphNodes<Stations>>>();
+//    public static HashMap<Integer, ArrayList<GraphNodes<Stations>>> lineMap = new HashMap<Integer, ArrayList<GraphNodes<Stations>>>();
 
 
     @FXML
     void findStation(MouseEvent event) throws Exception {
         readStationCsv("src\\main\\java\\London\\csv\\London.csv");
-//        for (int i = 0; i < stationList.size(); i++) {
-//            System.out.println(stationList.get(i).data);
-//        }
-        System.out.println(stationList.get(0).data.toString());
 
         populateStationAdjList("src\\main\\java\\London\\csv\\Lines.csv");
 
-//        for (int i = 0; i < lineArray.size(); i++) {
-//            System.out.println(lineArray.get(i).data.getStation1ID());
-//        }
-//        createLines(lineArray);
 
     }
 
@@ -157,31 +154,65 @@ public class FinderController {
 
     }
 
-    public void populateStationAdjList(String path) throws Exception {
+    public void populateStationAdjList(String path) throws Exception {              //populates the adjacency list with line definitions CSV
         BufferedReader br = new BufferedReader(new FileReader(path));
         String line;
 
         while ((line = br.readLine()) != null) {
             String[] values = line.split(",");
-            int srcId = Integer.valueOf(values[0]);
-            int destId = Integer.valueOf(values[1]);
-            GraphNodes<Stations> srcNode = null;
+            int startId = Integer.valueOf(values[0]);                               //start station id
+            int destId = Integer.valueOf(values[1]);                                //destination station id
+            int lineNum = Integer.valueOf(values[2]);                               //line number
+
+            GraphNodes<Stations> startNode = null;
             GraphNodes<Stations> destNode = null;
-            for (GraphNodes<Stations> node : stationList) {
-                if (node.data.getId() == srcId) {
-                    srcNode = node;
+            for (GraphNodes<Stations> node : stationList) {                         //finds the start and destination nodes
+                if (node.data.getId() == startId) {
+                    startNode = node;
                 }
                 if (node.data.getId() == destId) {
                     destNode = node;
                 }
             }
-            if(srcNode != null && destNode != null){
-               srcNode.connectToNodeUndirected(destNode);
+            if(startNode != null && destNode != null){                              //if both nodes are found, connect them
+               startNode.connectToNodeUndirected(destNode, lineNum);
+            }
+
+            // Find the line number of the current station
+            int stationLineNum = -1;
+            for (GraphNodes<Stations> node : stationList) {                         //finds the start and destination nodes
+                if (node.data.getId() == startId) {
+                    stationLineNum = lineNum;
+                    break;
+                }
+            }
+
+            // Add the station to the appropriate list
+            if (stationLineNum != -1) {
+                List<Stations> lineStations = lineMap.get(stationLineNum);          //get the list of stations for the current line
+                if (lineStations == null) {                                         //if the list is null, create a new list
+                    lineStations = new ArrayList<>();
+                    lineMap.put(stationLineNum, lineStations);                      //add the new list to the map
+                }
+                Stations station1 = startNode.data;
+                Stations station2 = destNode != null ? destNode.data : null;
+
+                if (!lineStations.contains(station1)) {                             //if the list doesn't contain the station, add it
+                    lineStations.add(station1);
+                }
+                if (station2 != null && !lineStations.contains(station2)) {         //if the list doesn't contain the station, add it
+                    lineStations.add(station2);
+                }
             }
         }
+
         br.close();
+        for (Map.Entry<Integer, List<Stations>> entry : lineMap.entrySet()) {
+            System.out.println(entry.getValue().size());
+        }
 
     }
+
 //    public List<GraphLink2<LineDefinition>> readLineDefinitions(String path) throws Exception {
 //        BufferedReader br = new BufferedReader(new FileReader(path));
 //        String line;
