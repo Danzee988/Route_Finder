@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
@@ -74,8 +75,8 @@ public class FinderController {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
-        File file = fileChooser.showOpenDialog(null);
-//        File file = new File("C:\\Users\\danze\\Desktop\\1.jpg");
+//        File file = fileChooser.showOpenDialog(null);
+        File file = new File("C:\\Users\\danze\\Desktop\\1.jpg");
 
         Image image1 = new Image(String.valueOf(file));
         map.setImage(image1);
@@ -127,7 +128,7 @@ public class FinderController {
 //        System.out.println("Recursive depth first traversal starting at Orange");
 //        System.out.println("-------------------------------------------------");
 //        traverseGraphDepthFirst(stationList.get(1),null);
-        System.out.println(stationList.toString());
+//        System.out.println(stationList.toString());
     }
 
     //--------------------------------------Methods--------------------------------------
@@ -229,7 +230,7 @@ public class FinderController {
     public void takeRoute(){
         int i = startStn.getSelectionModel().getSelectedIndex();
 //        GraphNodes<Stations> startNode = stationList.get(i);
-        findLine();
+        stationToStationByLine();
 
     }
 
@@ -293,13 +294,18 @@ public class FinderController {
 //
 //    }
 
+    @FXML
+    public ListView<String> pathsList;
+
     //find the line that the two stations are on
-    public void findLine(){
+    public void stationToStationByLine(){
+        pathsList.getItems().clear();
         int i = startStn.getSelectionModel().getSelectedIndex();
         int j = destinationStn.getSelectionModel().getSelectedIndex();
         GraphNodes<Stations> startNode = stationList.get(i);
         GraphNodes<Stations> destNode = stationList.get(j);
         List<Stations> line = new ArrayList<>();
+        List<GraphNodes<?>> encountered = new ArrayList<>();
         for(int k = 0; k < lineMap.size(); k++){
             if(lineMap.get(k) != null) {
                 for (int l = 0; l < lineMap.get(k).size(); l++) {
@@ -313,43 +319,52 @@ public class FinderController {
                 }
             }
         }
-        goStationToStationOnOneLine(startNode, destNode, null, line);
+        traverseGraphByLine(startNode, destNode, encountered, line);
+
+        List<GraphNodes<?>> path = new ArrayList<>();
+
+        int numPath = 0;
+
+        for (GraphNodes<?> node : encountered) {
+            if(startNode.station == node.station){
+                path = new ArrayList<>();
+                path.add(node);
+            }else if(startNode.adjList.contains(node)){
+                path = new ArrayList<>();
+                path.add(startNode);
+                path.add(node);
+            }else if(destNode.station == node.station) {
+                path.add(node);
+                numPath++;
+                pathsList.getItems().add("Route " + numPath + ": ");
+                for (GraphNodes<?> pathNode : path) {
+                    GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
+                    pathsList.getItems().add(station.station.getName());
+                }
+            }else {
+                path.add(node);
+            }
+        }
     }
 
     //traverse graph from one station to the next
-    public void goStationToStationOnOneLine(GraphNodes<?> from, GraphNodes<?> to, List<GraphNodes<?>> encountered, List<Stations> line){
-        System.out.println(from.station);
+    public void traverseGraphByLine(GraphNodes<?> from, GraphNodes<?> to, List<GraphNodes<?>> encountered, List<Stations> line){
         if (encountered == null)
             encountered = new ArrayList<>(); //First node so create new (empty) encountered list
         encountered.add(from);
 
-
-        List<GraphNodes<?>> path = new ArrayList<>();
-
-        GraphNodes<?> start = encountered.get(0);
-
         for (GraphNodes<?> adjNode : from.adjList) {
             if (line.contains(adjNode.station)) {
-                path.add(adjNode);
                 if (adjNode.station == to.station) {
-                    System.out.println("Destination Node: " + adjNode.station);
                     encountered.add(adjNode);
-                    System.out.println("Route: " + encountered);
-//                    for (int i = 0; i < encountered.size(); i++) {
-//                        if(start.adjList.contains(encountered.get(i))){
-//                            direction1.add(encountered.get(i));
-//                        }
-//                        else{
-//                            direction2.add(encountered.get(i));
-//                        }
-//                    }
-                    break;
+                    return;
                 } else if (!encountered.contains(adjNode))
-                    goStationToStationOnOneLine(adjNode, to, encountered, line);
+                    traverseGraphByLine(adjNode, to, encountered, line);
             }
         }
-        System.out.println("Route: " + path);
     }
+
+
 
 
 
