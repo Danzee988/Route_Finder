@@ -152,7 +152,6 @@ public class FinderController {
     public void readStationCsv(String path) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(path));
         String line;
-        //int newId = 1;
         while ((line = br.readLine()) != null) {
             String[] values = line.split(",");
             if (values.length > 4 && ("1".equals(values[4].trim()) || "1.5".equals(values[4].trim()))) {
@@ -304,8 +303,11 @@ public class FinderController {
         int j = destinationStn.getSelectionModel().getSelectedIndex();
         GraphNodes<Stations> startNode = stationList.get(i);
         GraphNodes<Stations> destNode = stationList.get(j);
-        List<Stations> line = new ArrayList<>();
+        List<Stations> line;
         List<GraphNodes<?>> encountered = new ArrayList<>();
+
+        int numPath = 0;
+
         for(int k = 0; k < lineMap.size(); k++){
             if(lineMap.get(k) != null) {
                 for (int l = 0; l < lineMap.get(k).size(); l++) {
@@ -313,53 +315,62 @@ public class FinderController {
                         for(int m = 0; m < lineMap.get(k).size(); m++){
                             if(lineMap.get(k).get(m).getId() == destNode.station.getId()){
                                 line = lineMap.get(k);
+
+                                traverseGraphByLine(startNode, destNode, encountered, line);
+
+                                List<GraphNodes<?>> path = new ArrayList<>();
+
+
+                                //TODO: fix this. Prints out the first path twice
+                                if(encountered.isEmpty()){
+                                    pathsList.getItems().add("No route found on single line");
+                                }else if(encountered != null) {
+                                    for (GraphNodes<?> node : encountered) {
+                                        if (startNode.station == node.station) {
+                                            path = new ArrayList<>();
+                                            path.add(node);
+                                        } else if (startNode.adjList.contains(node)) {
+                                            path = new ArrayList<>();
+                                            path.add(startNode);
+                                            path.add(node);
+                                        } else if (destNode.station == node.station) {
+                                            path.add(node);
+                                            numPath++;
+                                            pathsList.getItems().add("Route " + numPath + ": ");
+                                            for (GraphNodes<?> pathNode : path) {
+                                                GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
+                                                pathsList.getItems().add(station.station.getName());
+                                            }
+                                            pathsList.getItems().add(" ");
+                                        } else {
+                                            path.add(node);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
-        traverseGraphByLine(startNode, destNode, encountered, line);
 
-        List<GraphNodes<?>> path = new ArrayList<>();
-
-        int numPath = 0;
-
-        for (GraphNodes<?> node : encountered) {
-            if(startNode.station == node.station){
-                path = new ArrayList<>();
-                path.add(node);
-            }else if(startNode.adjList.contains(node)){
-                path = new ArrayList<>();
-                path.add(startNode);
-                path.add(node);
-            }else if(destNode.station == node.station) {
-                path.add(node);
-                numPath++;
-                pathsList.getItems().add("Route " + numPath + ": ");
-                for (GraphNodes<?> pathNode : path) {
-                    GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
-                    pathsList.getItems().add(station.station.getName());
-                }
-            }else {
-                path.add(node);
-            }
-        }
     }
 
     //traverse graph from one station to the next
     public void traverseGraphByLine(GraphNodes<?> from, GraphNodes<?> to, List<GraphNodes<?>> encountered, List<Stations> line){
-        if (encountered == null)
-            encountered = new ArrayList<>(); //First node so create new (empty) encountered list
-        encountered.add(from);
+        if(line != null) {
+            if (encountered == null)
+                encountered = new ArrayList<>(); //First node so create new (empty) encountered list
+            encountered.add(from);
 
-        for (GraphNodes<?> adjNode : from.adjList) {
-            if (line.contains(adjNode.station)) {
-                if (adjNode.station == to.station) {
-                    encountered.add(adjNode);
-                    return;
-                } else if (!encountered.contains(adjNode))
-                    traverseGraphByLine(adjNode, to, encountered, line);
+            for (GraphNodes<?> adjNode : from.adjList) {
+                if (line.contains(adjNode.station)) {
+                    if (adjNode.station == to.station) {
+                        encountered.add(adjNode);
+                        return;
+                    } else if (!encountered.contains(adjNode))
+                        traverseGraphByLine(adjNode, to, encountered, line);
+                }
             }
         }
     }
