@@ -333,6 +333,7 @@ public class FinderController {
     }
 
     public void stationToStationAllLine() {
+        routes.getItems().clear();
         pathsList.getItems().clear();
         int i = startStn.getSelectionModel().getSelectedIndex();
         int j = destinationStn.getSelectionModel().getSelectedIndex();
@@ -357,9 +358,29 @@ public class FinderController {
 
                                 if (shortestPath.isEmpty()) {
                                     pathsList.getItems().add("No route found on single line");
-                                } else {
+                                } else if(!paths.isEmpty()){
                                     numPath++;
+                                    boolean pathExists = false;
+                                    for(List<GraphNodes<?>> n : paths.values()) {
+                                        if(n.equals(shortestPath)) {
+                                            pathExists = true;
+                                            numPath--;
+                                        }
+                                    }
 
+                                    if(!pathExists) {
+                                        pathsList.getItems().add("Route " + numPath + ": " + shortestPath.size() + " stops");
+                                        for (GraphNodes<?> pathNode : shortestPath) {
+                                            GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
+
+                                            pathsList.getItems().add(station.station.getName());
+                                        }
+
+                                        pathsList.getItems().add(" ");
+                                        routes.getItems().add(numPath);
+                                    }
+                                }else if(paths.isEmpty()){
+                                    numPath++;
                                     pathsList.getItems().add("Route " + numPath + ": " + shortestPath.size() + " stops");
                                     for (GraphNodes<?> pathNode : shortestPath) {
                                         GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
@@ -369,7 +390,6 @@ public class FinderController {
 
                                     pathsList.getItems().add(" ");
                                     routes.getItems().add(numPath);
-
                                 }
                             }
                         }
