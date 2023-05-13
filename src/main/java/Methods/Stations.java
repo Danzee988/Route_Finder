@@ -70,4 +70,10 @@ public class Stations {
                 ", latitude= " + latitude +
                 " }";
     }
+
+    //@Override
+    public String pathName() {
+        return  name;
+    }
+
 }
