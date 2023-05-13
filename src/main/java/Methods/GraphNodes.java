@@ -10,7 +10,6 @@ public class GraphNodes<T> {
 
     public List<GraphNodes<T>> adjList=new ArrayList<>(); //Could use any List implementation
     public GraphNodes(T data) {
-
         this.station =data;
     }
 

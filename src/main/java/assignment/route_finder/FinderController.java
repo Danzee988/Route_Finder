@@ -306,14 +306,16 @@ public class FinderController {
         List<Stations> line;
         List<GraphNodes<?>> encountered = new ArrayList<>();
 
+        Map<Integer, List<GraphNodes<?>>> paths = new HashMap<>();
+
         int numPath = 0;
 
-        for(int k = 0; k < lineMap.size(); k++){
-            if(lineMap.get(k) != null) {
+        for(int k = 0; k < lineMap.size(); k++) {
+            if (lineMap.get(k) != null) {
                 for (int l = 0; l < lineMap.get(k).size(); l++) {
                     if (lineMap.get(k).get(l).getId() == startNode.station.getId()) {
-                        for(int m = 0; m < lineMap.get(k).size(); m++){
-                            if(lineMap.get(k).get(m).getId() == destNode.station.getId()){
+                        for (int m = 0; m < lineMap.get(k).size(); m++) {
+                            if (lineMap.get(k).get(m).getId() == destNode.station.getId()) {
                                 line = lineMap.get(k);
 
                                 traverseGraphByLine(startNode, destNode, encountered, line);
@@ -321,10 +323,8 @@ public class FinderController {
                                 List<GraphNodes<?>> path = new ArrayList<>();
 
 
-                                //TODO: fix this. Prints out the first path twice
-                                if(encountered.isEmpty()){
-                                    pathsList.getItems().add("No route found on single line");
-                                }else if(encountered != null) {
+                                //TODO: fix this. Prints out some paths twice
+                                if (encountered != null) {
                                     for (GraphNodes<?> node : encountered) {
                                         if (startNode.station == node.station) {
                                             path = new ArrayList<>();
@@ -336,12 +336,34 @@ public class FinderController {
                                         } else if (destNode.station == node.station) {
                                             path.add(node);
                                             numPath++;
-                                            pathsList.getItems().add("Route " + numPath + ": ");
-                                            for (GraphNodes<?> pathNode : path) {
-                                                GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
-                                                pathsList.getItems().add(station.station.getName());
+
+                                            if(!paths.isEmpty()) {
+                                                boolean pathExists = false;
+                                                System.out.println("Path Size: " + paths.size());
+                                                for(int n = 1; n < paths.size()+1; n++) {
+                                                    System.out.println(n);
+                                                    if(paths.get(n).equals(path)) {
+                                                        pathExists = true;
+                                                    }
+                                                }
+                                                if(!pathExists) {
+                                                    pathsList.getItems().add("Route " + numPath + ": ");
+                                                    for (GraphNodes<?> pathNode : path) {
+                                                        GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
+                                                        pathsList.getItems().add(station.station.getName());
+                                                    }
+                                                    pathsList.getItems().add(" ");
+                                                    paths.put(numPath, path);
+                                                }
+                                            }else {
+                                                pathsList.getItems().add("Route " + numPath + ": ");
+                                                for (GraphNodes<?> pathNode : path) {
+                                                    GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
+                                                    pathsList.getItems().add(station.station.getName());
+                                                }
+                                                pathsList.getItems().add(" ");
+                                                paths.put(numPath, path);
                                             }
-                                            pathsList.getItems().add(" ");
                                         } else {
                                             path.add(node);
                                         }
