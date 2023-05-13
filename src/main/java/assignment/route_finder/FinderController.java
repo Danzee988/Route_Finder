@@ -365,6 +365,7 @@ public class FinderController {
                                         if(n.equals(shortestPath)) {
                                             pathExists = true;
                                             numPath--;
+                                            System.out.println(2);
                                         }
                                     }
 
@@ -378,8 +379,9 @@ public class FinderController {
 
                                         pathsList.getItems().add(" ");
                                         routes.getItems().add(numPath);
+                                        paths.put(numPath, shortestPath);
                                     }
-                                }else if(paths.isEmpty()){
+                                }else if(paths.get(0) != shortestPath || paths.isEmpty()){
                                     numPath++;
                                     pathsList.getItems().add("Route " + numPath + ": " + shortestPath.size() + " stops");
                                     for (GraphNodes<?> pathNode : shortestPath) {
@@ -387,6 +389,7 @@ public class FinderController {
 
                                         pathsList.getItems().add(station.station.getName());
                                     }
+                                    paths.put(numPath, shortestPath);
 
                                     pathsList.getItems().add(" ");
                                     routes.getItems().add(numPath);
