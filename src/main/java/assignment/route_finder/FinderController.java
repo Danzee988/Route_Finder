@@ -339,11 +339,10 @@ public class FinderController {
 
                                             if(!paths.isEmpty()) {
                                                 boolean pathExists = false;
-                                                System.out.println("Path Size: " + paths.size());
-                                                for(int n = 1; n < paths.size()+1; n++) {
-                                                    System.out.println(n);
-                                                    if(paths.get(n).equals(path)) {
+                                                for(List<GraphNodes<?>> n : paths.values()) {
+                                                    if(n.equals(path)) {
                                                         pathExists = true;
+                                                        numPath--;
                                                     }
                                                 }
                                                 if(!pathExists) {
