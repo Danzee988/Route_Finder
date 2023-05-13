@@ -161,8 +161,11 @@ public class FinderController {
 
     //travers the route from one station to the next
     public void takeRoute(){
-        //stationToStationByLine();
-        stationToStationAllLine();
+        stationToStationByLine();
+    }
+
+    public void shortRoute(){
+        findShortestRoute();
     }
     public void showRoute(){
 //        int routNum = routes.getSelectionModel().getSelectedIndex();
@@ -188,7 +191,9 @@ public class FinderController {
         GraphNodes<Stations> startNode = stationList.get(i);
         GraphNodes<Stations> destNode = stationList.get(j);
 
-        int routSize = 4;
+        int routNum = routes.getSelectionModel().getSelectedIndex();
+        System.out.println(routNum + " Rout num");
+        int routSize = paths.get(routNum + 1).size() ;
 
         double distance = distance(startNode.station.getLatitude(), startNode.station.getLongitude(), destNode.station.getLatitude(), destNode.station.getLongitude());
         double costOfTravel = distance * routSize;
@@ -231,10 +236,11 @@ public class FinderController {
 
     @FXML
     public ListView<String> chosenRoute;
-    List<GraphNodes<?>> path = new ArrayList<>();
+    Map<Integer, List<GraphNodes<?>>> paths = new HashMap<>();
 
     //find the line that the two stations are on
     public void stationToStationByLine(){
+        routes.getItems().clear();
         pathsList.getItems().clear();
         int i = startStn.getSelectionModel().getSelectedIndex();
         int j = destinationStn.getSelectionModel().getSelectedIndex();
@@ -243,7 +249,7 @@ public class FinderController {
         List<Stations> line;
         List<GraphNodes<?>> encountered = new ArrayList<>();
 
-        Map<Integer, List<GraphNodes<?>>> paths = new HashMap<>();
+        //Map<Integer, List<GraphNodes<?>>> paths = new HashMap<>();
 
         int numPath = 0;
 
@@ -282,22 +288,25 @@ public class FinderController {
                                                     }
                                                 }
                                                 if(!pathExists) {
-                                                    pathsList.getItems().add("Route " + numPath + ": ");
+                                                    pathsList.getItems().add("Route " + numPath + ": " + path.size() + " stops");
                                                     for (GraphNodes<?> pathNode : path) {
                                                         GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
                                                         pathsList.getItems().add(station.station.getName());
                                                     }
                                                     pathsList.getItems().add(" ");
                                                     paths.put(numPath, path);
+                                                    routes.getItems().add(numPath);
                                                 }
                                             }else {
-                                                pathsList.getItems().add("Route " + numPath + ": ");
+                                                pathsList.getItems().add("Route " + numPath + ": " + path.size() + " stops");
                                                 for (GraphNodes<?> pathNode : path) {
                                                     GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
                                                     pathsList.getItems().add(station.station.getName());
                                                 }
                                                 pathsList.getItems().add(" ");
                                                 paths.put(numPath, path);
+                                                routes.getItems().add(numPath);
+
                                             }
                                         } else {
                                             path.add(node);
@@ -332,7 +341,7 @@ public class FinderController {
         }
     }
 
-    public void stationToStationAllLine() {
+    public void findShortestRoute() {
         routes.getItems().clear();
         pathsList.getItems().clear();
         int i = startStn.getSelectionModel().getSelectedIndex();

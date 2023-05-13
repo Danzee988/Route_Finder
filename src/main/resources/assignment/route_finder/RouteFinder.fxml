@@ -82,13 +82,14 @@
                   <Button layoutX="30.0" layoutY="574.0" mnemonicParsing="false" onMouseClicked="#findStation" stylesheets="@style.css" text="Read Stations" />
                   <ComboBox id="btnBrighter" fx:id="startStn" layoutX="30.0" layoutY="617.0" prefHeight="25.0" prefWidth="173.0" promptText="Start" stylesheets="@style.css" />
                   <ComboBox id="btnBrighter" fx:id="destinationStn" layoutX="30.0" layoutY="655.0" prefHeight="25.0" prefWidth="173.0" promptText="Destination" stylesheets="@style.css" />
-                  <Button layoutX="210.0" layoutY="636.0" mnemonicParsing="false" onMouseClicked="#takeRoute" prefHeight="25.0" prefWidth="82.0" stylesheets="@style.css" text="Take Route" />
+                  <Button layoutX="30.0" layoutY="696.0" mnemonicParsing="false" onMouseClicked="#takeRoute" prefHeight="25.0" prefWidth="82.0" stylesheets="@style.css" text="Take Route" />
                   <ListView fx:id="pathsList" layoutX="300.0" layoutY="555.0" prefHeight="228.0" prefWidth="173.0" />
                   <ListView fx:id="chosenRoute" layoutX="673.0" layoutY="555.0" prefHeight="228.0" prefWidth="173.0" />
                   <Button layoutX="500.0" layoutY="599.0" mnemonicParsing="false" onAction="#showRoute" text="Show" />
                   <Text layoutX="500.0" layoutY="685.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#021b51" height="25.0" layoutX="500.0" layoutY="636.0" stroke="BLACK" strokeType="INSIDE" width="116.0" />
                   <Text fx:id="cost" fill="WHITE" layoutX="507.0" layoutY="653.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="102.869140625" />
+                  <Button fx:id="shortRoute" layoutX="30.0" layoutY="730.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="133.0" text="Find Shortest Route" />
                </children>
             </Pane>
             <Pane fx:id="pnlProcess" prefHeight="200.0" prefWidth="200.0" visible="false" />
