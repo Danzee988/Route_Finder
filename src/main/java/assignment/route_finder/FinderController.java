@@ -234,6 +234,15 @@ public class FinderController {
     }
 
 
+    public void drawRoute(){
+        double height = map.getFitHeight();
+        double width = map.getFitWidth();
+
+        System.out.println("Height: " + height);
+        System.out.println("Width: " + width);
+
+        System.out.println(stationList.get(0).station.getLatitude());
+    }
 
 //    public List<GraphLink2<LineDefinition>> readLineDefinitions(String path) throws Exception {
 //        BufferedReader br = new BufferedReader(new FileReader(path));
@@ -323,7 +332,6 @@ public class FinderController {
                                 List<GraphNodes<?>> path = new ArrayList<>();
 
 
-                                //TODO: fix this. Prints out some paths twice
                                 if (encountered != null) {
                                     for (GraphNodes<?> node : encountered) {
                                         if (startNode.station == node.station) {
