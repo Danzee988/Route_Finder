@@ -83,7 +83,7 @@
                   <ComboBox id="btnBrighter" fx:id="startStn" layoutX="30.0" layoutY="617.0" prefHeight="25.0" prefWidth="173.0" promptText="Start" stylesheets="@style.css" />
                   <ComboBox id="btnBrighter" fx:id="destinationStn" layoutX="30.0" layoutY="655.0" prefHeight="25.0" prefWidth="173.0" promptText="Destination" stylesheets="@style.css" />
                   <Button layoutX="210.0" layoutY="636.0" mnemonicParsing="false" onMouseClicked="#takeRoute" prefHeight="25.0" prefWidth="82.0" stylesheets="@style.css" text="Take Route" />
-                  <ListView fx:id="pathsList" layoutX="292.0" layoutY="566.0" prefHeight="228.0" prefWidth="173.0" />
+                  <ListView fx:id="pathsList" layoutX="300.0" layoutY="555.0" prefHeight="228.0" prefWidth="173.0" />
                   <ListView fx:id="chosenRoute" layoutX="673.0" layoutY="555.0" prefHeight="228.0" prefWidth="173.0" />
                   <Button layoutX="500.0" layoutY="599.0" mnemonicParsing="false" onAction="#showRoute" text="Show" />
                   <Text layoutX="500.0" layoutY="685.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
