@@ -87,9 +87,9 @@
                   <ListView fx:id="chosenRoute" layoutX="673.0" layoutY="555.0" prefHeight="228.0" prefWidth="173.0" />
                   <Button layoutX="500.0" layoutY="599.0" mnemonicParsing="false" onAction="#showRoute" text="Show" />
                   <Text layoutX="500.0" layoutY="685.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#021b51" height="25.0" layoutX="500.0" layoutY="636.0" stroke="BLACK" strokeType="INSIDE" width="116.0" />
-                  <Text fx:id="cost" fill="WHITE" layoutX="507.0" layoutY="653.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="102.869140625" />
-                  <Button fx:id="shortRoute" layoutX="30.0" layoutY="730.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="133.0" text="Find Shortest Route" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#021b51" height="25.0" layoutX="500.0" layoutY="636.0" stroke="BLACK" strokeType="INSIDE" width="133.0" />
+                  <Text fx:id="cost" fill="WHITE" layoutX="511.0" layoutY="653.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="133.0" />
+                  <Button fx:id="shortRoute" layoutX="30.0" layoutY="730.0" mnemonicParsing="false" onMouseClicked="#shortRoute" prefHeight="25.0" prefWidth="133.0" text="Find Shortest Route" />
                </children>
             </Pane>
             <Pane fx:id="pnlProcess" prefHeight="200.0" prefWidth="200.0" visible="false" />

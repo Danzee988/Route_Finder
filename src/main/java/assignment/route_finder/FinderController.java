@@ -165,43 +165,43 @@ public class FinderController {
     }
 
     public void shortRoute(){
+
         findShortestRoute();
     }
     public void showRoute(){
 //        int routNum = routes.getSelectionModel().getSelectedIndex();
 //        chosenRoute.getItems().clear();
 //        System.out.println(routNum + " Rout num");
-//        System.out.println(path + " Path");
-//        for(int i = 0; i < path.size(); i++){
-//            System.out.println(path.size() + " Path size");
-//            chosenRoute.getItems().add(String.valueOf(path.get(routNum).station));
+//        System.out.println(paths + " Paths");
+//        for(int i = 0; i < paths.size(); i++){
+//            System.out.println(paths.size() + " Path size");
+//            System.out.println(paths.get(routNum) + " Path");
+//            chosenRoute.getItems().add(String.valueOf(paths.get(routNum + 1)));
 //        }
-        calculateCost();
+        int routNum = routes.getSelectionModel().getSelectedIndex();
+        calculateCost(paths.get(routNum + 1).size());
     }
 
-//    @FXML
-//    private ListView<String> cost;
 
+    //--------------------------------------Calculation Methods--------------------------------------
+    //--------------------------------------Cost Methods---------------------------------------------
     @FXML
     private Text cost;
 
-    public void calculateCost(){
+    public void calculateCost(int x){
         int i = startStn.getSelectionModel().getSelectedIndex();
         int j = destinationStn.getSelectionModel().getSelectedIndex();
         GraphNodes<Stations> startNode = stationList.get(i);
         GraphNodes<Stations> destNode = stationList.get(j);
 
-        int routNum = routes.getSelectionModel().getSelectedIndex();
-        System.out.println(routNum + " Rout num");
-        int routSize = paths.get(routNum + 1).size() ;
+        int routSize =  x;
 
         double distance = distance(startNode.station.getLatitude(), startNode.station.getLongitude(), destNode.station.getLatitude(), destNode.station.getLongitude());
+        System.out.println(distance + " Distance");
         double costOfTravel = distance * routSize;
         double roundedCost = Math.round(costOfTravel * 100.0) / 100.0;
 
         cost.setText("Route Cost: €" + roundedCost);
-        System.out.println(costOfTravel + " Cost of travel");
-
 
     }
 
@@ -220,6 +220,7 @@ public class FinderController {
         return RADIUS_OF_EARTH * c;
     }
 
+//---------------------------------------------------------------------------------------
 
     public void drawRoute(){
         double height = map.getFitHeight();
@@ -231,6 +232,8 @@ public class FinderController {
         System.out.println(stationList.get(0).station.getLatitude());
     }
 
+    //--------------------------------------Route Finding Methods--------------------------------------
+    //--------------------------------------All Routes Methods-----------------------------------------
     @FXML
     public ListView<String> pathsList;
 
@@ -248,6 +251,7 @@ public class FinderController {
         GraphNodes<Stations> destNode = stationList.get(j);
         List<Stations> line;
         List<GraphNodes<?>> encountered = new ArrayList<>();
+        paths.clear();
 
         //Map<Integer, List<GraphNodes<?>>> paths = new HashMap<>();
 
@@ -260,6 +264,7 @@ public class FinderController {
                         for (int m = 0; m < lineMap.get(k).size(); m++) {
                             if (lineMap.get(k).get(m).getId() == destNode.station.getId()) {
                                 line = lineMap.get(k);
+                                System.out.println(encountered.size() + " Encountered size");
 
                                 traverseGraphByLine(startNode, destNode, encountered, line);
 
@@ -319,7 +324,6 @@ public class FinderController {
                 }
             }
         }
-
     }
 
     //traverse graph from one station to the next
@@ -341,6 +345,7 @@ public class FinderController {
         }
     }
 
+    //--------------------------------------Shortest Routes Methods-----------------------------------------
     public void findShortestRoute() {
         routes.getItems().clear();
         pathsList.getItems().clear();
@@ -409,6 +414,7 @@ public class FinderController {
                 }
             }
         }
+        calculateCost(paths.get(1).size());
     }
 
 
