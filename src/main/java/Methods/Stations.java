@@ -6,16 +6,20 @@ public class Stations {
     int id;
     String name;
 
+    int x;
+    int y;
     float longitude;
 
     float latitude;
 
     //------------------Constructor------------------
-    public Stations(int id, String name, float longitude, float latitude) {
+    public Stations(int id, String name, float longitude, float latitude, int x, int y) {
         this.id = id;
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.x = x;
+        this.y = y;
     }
 
 //    public Stations(int id, String name) {
@@ -38,6 +42,13 @@ public class Stations {
         return name;
     }
 
+    public int getX() {
+        return x;
+    }
+    public int getY() {
+        return y;
+    }
+
     //------------------Setters------------------
 
 
@@ -55,6 +66,14 @@ public class Stations {
 
     public void setLatitude(float latitude) {
         this.latitude = latitude;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     //------------------Methods------------------
