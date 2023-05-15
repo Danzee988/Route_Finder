@@ -6,6 +6,8 @@ import java.util.*;
 public class GraphNodes<T> {
     public T station;
 
+    public int nodeValue = Integer.MAX_VALUE;
+
     private int line;
 
     public List<GraphNodes<T>> adjList=new ArrayList<>(); //Could use any List implementation

@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.util.Pair;
 
 import java.io.*;
 import java.util.*;
@@ -160,64 +161,141 @@ public class FinderController {
     }
 
     //travers the route from one station to the next
-    public void takeRoute(){
+    public void routeNoTransfers(){
         stationToStationByLine();
     }
 
     public void shortRoute(){
+        chosenRoute.getItems().clear();
+        int i = startStn.getSelectionModel().getSelectedIndex();
+        int j = destinationStn.getSelectionModel().getSelectedIndex();
+        GraphNodes<Stations> startNode = stationList.get(i);
+        GraphNodes<Stations> destNode = stationList.get(j);
 
         findShortestRoute();
-    }
-    public void showRoute(){
-//        int routNum = routes.getSelectionModel().getSelectedIndex();
-//        chosenRoute.getItems().clear();
-//        System.out.println(routNum + " Rout num");
-//        System.out.println(paths + " Paths");
-//        for(int i = 0; i < paths.size(); i++){
-//            System.out.println(paths.size() + " Path size");
-//            System.out.println(paths.get(routNum) + " Path");
-//            chosenRoute.getItems().add(String.valueOf(paths.get(routNum + 1)));
-//        }
-        int routNum = routes.getSelectionModel().getSelectedIndex();
-        calculateCost(paths.get(routNum + 1).size());
+        dijkstra(startNode, destNode);
     }
 
+    public void routeAllLines(){
+        int i = startStn.getSelectionModel().getSelectedIndex();
+        int j = destinationStn.getSelectionModel().getSelectedIndex();
+        GraphNodes<Stations> startNode = stationList.get(i);
+        GraphNodes<Stations> destNode = stationList.get(j);
+
+        findAllPaths(startNode, destNode);
+    }
+    public void showRoute(){
+        int routNum = routes.getSelectionModel().getSelectedIndex();
+        int i = startStn.getSelectionModel().getSelectedIndex();
+        int j = destinationStn.getSelectionModel().getSelectedIndex();
+        GraphNodes<Stations> startNode = stationList.get(i);
+        GraphNodes<Stations> destNode = stationList.get(j);
+
+        chosenRoute.getItems().clear();
+
+        for (GraphNodes<?> pathNode : paths.get(routNum + 1)) {
+            GraphNodes<Stations> stnNode = (GraphNodes<Stations>) pathNode;
+            chosenRoute.getItems().add(stnNode.station.getName());
+        }
+
+        calculateCostB(paths.get(routNum + 1).size());
+    }
+
+    //--------------------------------------Methods for all paths--------------------------------------
+    public List<List<GraphNodes<Stations>>> findAllPaths(GraphNodes<Stations> start, GraphNodes<Stations> destination) {
+        Map<GraphNodes<Stations>, Integer> visited = new HashMap<>(); // 0 = not visited, 1 = currently visiting, 2 = visited
+        List<List<GraphNodes<Stations>>> allPaths = new ArrayList<>(); // list of all paths
+        List<GraphNodes<Stations>> currentPath = new ArrayList<>(); // current path being explored
+        searchNodes(start, destination, visited, allPaths, currentPath); // search for all paths
+        for (List<GraphNodes<Stations>> path : allPaths) { // print all paths
+//            System.out.println("Paths: " + allPaths.size());
+            for (GraphNodes<Stations> node : path) {
+                System.out.print(node.station.getName());
+                System.out.println(" \n");
+            }
+            System.out.println();
+        }
+        return allPaths;
+    }
+
+    private void searchNodes(GraphNodes<Stations> node, GraphNodes<Stations> destination, Map<GraphNodes<Stations>, Integer> visited,
+                     List<List<GraphNodes<Stations>>> allPaths, List<GraphNodes<Stations>> currentPath) {
+        visited.put(node, 1); // mark as currently visiting
+        currentPath.add(node); // add to current path
+        if (node.equals(destination)) { // if destination reached, add current path to list of all paths
+            allPaths.add(new ArrayList<>(currentPath)); // add copy of current path
+        } else {
+            for (GraphNodes<Stations> neighbor : node.adjList) { // visit all neighbors
+                if (!visited.containsKey(neighbor) || visited.get(neighbor) == 0) { // not yet visited
+                    searchNodes(neighbor, destination, visited, allPaths, currentPath); // recursively search
+                } else if (visited.get(neighbor) == 1) { // currently visiting, cycle detected
+                    System.out.println("Cycle detected at node " + neighbor);
+                }
+            }
+        }
+        visited.put(node, 2); // mark as visited
+        currentPath.remove(currentPath.size() - 1); // remove from current path
+        System.out.println(allPaths.size() + " number of paths" );
+    }
 
     //--------------------------------------Calculation Methods--------------------------------------
     //--------------------------------------Cost Methods---------------------------------------------
     @FXML
     private Text cost;
 
-    public void calculateCost(int x){
-        int i = startStn.getSelectionModel().getSelectedIndex();
-        int j = destinationStn.getSelectionModel().getSelectedIndex();
-        GraphNodes<Stations> startNode = stationList.get(i);
-        GraphNodes<Stations> destNode = stationList.get(j);
+    @FXML
+    private Text totalRoutes;
+
+    public double calculateCost(GraphNodes<Stations> node1, GraphNodes<Stations> node2) {
+        double lat1 = node1.station.getLatitude();
+        double lon1 = node1.station.getLongitude();
+        double lat2 = node2.station.getLatitude();
+        double lon2 = node2.station.getLongitude();
+        double distance = distance(lat1, lon1, lat2, lon2);
+        double cost = distance * 1.2;
+        return cost;
+    }
+
+
+    public void calculateCostB(int x){
+        int routNum = routes.getSelectionModel().getSelectedIndex();
 
         int routSize =  x;
+        List<Double> costs = new ArrayList<>();
 
-        double distance = distance(startNode.station.getLatitude(), startNode.station.getLongitude(), destNode.station.getLatitude(), destNode.station.getLongitude());
-        System.out.println(distance + " Distance");
-        double costOfTravel = distance * routSize;
-        double roundedCost = Math.round(costOfTravel * 100.0) / 100.0;
+        for (int k = 0; k < routSize - 1; k++) {
+            GraphNodes<Stations> stnNode1 = (GraphNodes<Stations>) paths.get(routNum + 1).get(k); //get the first station
+            GraphNodes<Stations> stnNode2 = (GraphNodes<Stations>) paths.get(routNum + 1).get(k + 1); //get the second station
+            double lat1 = stnNode1.station.getLatitude();
+            double lon1 = stnNode1.station.getLongitude();
+            double lat2 = stnNode2.station.getLatitude();
+            double lon2 = stnNode2.station.getLongitude();
+            double distance = distance(lat1, lon1, lat2, lon2); //calculate distance between the two stations
+            double cost = distance * 1.2; //calculate cost of the route between the two stations
+            costs.add(cost); //add the cost to the list of costs
+        }
 
-        cost.setText("Route Cost: €" + roundedCost);
-
+        double totalCost = costs.stream().mapToDouble(Double::doubleValue).sum(); //calculate the total cost of the route
+        double roundedCost = Math.round(totalCost * 100.0) / 100.0; //round the cost to two decimal places
+        cost.setText("Route Cost: €" + roundedCost); //display the cost of the route
+        int total = costs.size() + 1; //calculate the total number of stations in the route
+        totalRoutes.setText("Total Routes: " + total); //display the total number of stations in the route
     }
+
 
     public static final double RADIUS_OF_EARTH = 6371; // Earth's radius in kilometers
 
     public static double distance(double lat1, double lon1, double lat2, double lon2) {
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
+        double dLat = Math.toRadians(lat2 - lat1); // difference in latitude
+        double dLon = Math.toRadians(lon2 - lon1); // difference in longitude
 
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2); // haversine formula (spherical law of cosines)
 
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); // great circle distance in radians
 
-        return RADIUS_OF_EARTH * c;
+        return RADIUS_OF_EARTH * c; // great circle distance in kilometers (approximately)
     }
 
 //---------------------------------------------------------------------------------------
@@ -414,7 +492,7 @@ public class FinderController {
                 }
             }
         }
-        calculateCost(paths.get(1).size());
+        //calculateCost(paths.get(1).size());
     }
 
 
@@ -449,6 +527,51 @@ public class FinderController {
         // If no path is found, return an empty list
         return shortestRoute;
     }
+
+    //--------------------------------------Dijkstra Methods-----------------------------------------
+    public Pair<List<GraphNodes<?>>, Double> dijkstra(GraphNodes<?> startNode, GraphNodes<?> destNode) {
+        Map<GraphNodes<?>, Double> distance = new HashMap<>();
+        PriorityQueue<GraphNodes<?>> queue = new PriorityQueue<>(Comparator.comparingDouble(distance::get));
+        Map<GraphNodes<?>, GraphNodes<?>> parent = new HashMap<>();
+
+        for (GraphNodes<?> node : stationList) {
+            distance.put(node, Double.POSITIVE_INFINITY);
+        }
+        distance.put(startNode, 0.0);
+        queue.offer(startNode);
+
+        while (!queue.isEmpty()) {
+            GraphNodes<?> current = queue.poll();
+
+            if (current == destNode) { // Found the destination node
+                List<GraphNodes<?>> path = new ArrayList<>(); // Reconstruct the shortest path
+                GraphNodes<?> node = destNode; // from the parent map
+                while (node != null) { // backtracking from the destination node
+                    path.add(0, node);  // to the start node
+                    node = parent.get(node); // through its parents
+                }
+                double amount = distance.get(destNode); // The cost is the distance to the destination node
+                System.out.println("The shortest path from " + startNode + " to " + destNode + " is " + path + " with cost " + amount);
+                totalRoutes.setText("Total Routes: " + path.size());
+                double roundedCost = Math.round(amount * 100.0) / 100.0;
+                cost.setText("Route Cost: €" + roundedCost);
+                return new Pair<>(path, amount); // Return the path and its cost
+            }
+
+            for (GraphNodes<?> neighbor : current.adjList) { // For each neighbor of the current node
+                double newDistance = distance.get(current) + calculateCost((GraphNodes<Stations>) current, (GraphNodes<Stations>) neighbor); // Calculate the new distance
+                if (newDistance < distance.get(neighbor)) { // If the new distance is less than the current distance
+                    distance.put(neighbor, newDistance); // Update the distance map
+                    parent.put(neighbor, current); // Update the parent map
+                    queue.offer(neighbor); // Offer the neighbor to the queue
+                }
+            }
+        }
+
+        return null;
+    }
+
+
 
 
 
