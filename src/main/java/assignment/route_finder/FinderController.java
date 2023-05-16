@@ -20,7 +20,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
-import javafx.geometry.Point2D;
 
 import java.io.*;
 import java.util.*;
@@ -76,9 +75,6 @@ public class FinderController {
         int stn1 = startStn.getSelectionModel().getSelectedIndex();
         int stn2 = destinationStn.getSelectionModel().getSelectedIndex();
 
-        Stations station1 = stationList.get(stn1).station;
-        Stations station2 = stationList.get(stn2).station;
-
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 Color color = pixelReader.getColor(i, j).grayscale();
@@ -86,46 +82,34 @@ public class FinderController {
             }
         }
 
-        int x1 = (int) ((station1.getX() * 1.63719) + 10);
-        int y1 = (int) (station1.getY() * 1.64932);
-
-        int x2 = (int) ((station2.getX() * 1.63719) + 10);
-        int y2 = (int) (station2.getY() * 1.64932);
-        //TODO: make this on a canvas
-
-//            rootNode.setAlignment(Pos.CENTER);
-//            Scene myScene = new Scene(rootNode, 450, 450);
-//            myStage.setScene(myScene);
-
-//            Canvas myCanvas = new Canvas(400, 400);
-//            GraphicsContext gc;
-
-//            // Get the graphics context for the canvas.
-//            gc = myCanvas.getGraphicsContext2D();
-//
-//
-//            gc.strokeLine(0, 0, 200, 200);
-//
-//            // Add the canvas and button to the scene graph.
-//            rootNode.getChildren().addAll(myCanvas);
-//
-//            // Show the stage and its scene.
-//            myStage.show();
-//        }
-
-
         Canvas canvas = new Canvas(map.getImage().getWidth(), map.getImage().getHeight());
-//        Canvas canvas2 = new Canvas(editedImage.getImage().getWidth(), editedImage.getImage().getHeight());
-//
-//        // Get the GraphicsContext of the Canvas
+
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setLineWidth(3);
         gc.setStroke(Color.RED);
         gc.setFill(Color.RED);
 
+        int x1= 0,y1=0,x2=0,y2=0;
 
-        gc.strokeLine(x1, y1, x2, y2);
-
+        for(int i = 0; i < chosenRoute.getItems().size(); i++) {
+            Stations station1;
+            Stations station2;
+            for (int j = 0; j < stationList.size(); j++) {
+                if (chosenRoute.getItems().get(i).equals(stationList.get(j).station.getName())) {
+                    station1 = stationList.get(j).station;
+                    x1 = (int) ((station1.getX() * 1.63719) + 10);
+                    y1 = (int) (station1.getY() * 1.64932);
+                }
+                if (i + 1 < chosenRoute.getItems().size()) {
+                    if (chosenRoute.getItems().get(i + 1).equals(stationList.get(j).station.getName())) {
+                        station2 = stationList.get(j).station;
+                        x2 = (int) ((station2.getX() * 1.63719) + 10);
+                        y2 = (int) (station2.getY() * 1.64932);
+                    }
+                }
+            }
+            gc.strokeLine(x1, y1, x2, y2);
+        }
 
         ImageView numberedImage = new ImageView(writableImage);
 
@@ -134,23 +118,6 @@ public class FinderController {
 
         map.setImage(numberedImage.getImage());
     }
-
-//    public static void drawLine(Point2D p1, Point2D p2, Color color, PixelWriter pw) {//www.java2s.com
-//        double k = (p2.getY() - p1.getY()) / (p2.getX() - p1.getX());
-//        if(k < 0) {
-//            Point2D temp = p1;
-//            p1 = p2;
-//            p2 = temp;
-//            k = (p2.getY() - p1.getY()) / (p2.getX() - p1.getX());
-//        }
-//
-//
-//        double y = 0;
-//        for (int x = (int) p1.getX(); x <= (int) p2.getX(); x++) {
-//            pw.setColor(x, (int) (y + .5), color);
-//            y += k;
-//        }
-//    }
 
 
     @FXML
@@ -270,6 +237,7 @@ public class FinderController {
     //travers the route from one station to the next
     public void routeNoTransfers(){
         stationToStationByLine();
+//        routeByAnyLine();
     }
 
     public void shortRoute(){
@@ -306,6 +274,7 @@ public class FinderController {
         }
 
         calculateCostB(paths.get(routNum + 1).size());
+        drawLine();
     }
 
     //--------------------------------------Methods for all paths--------------------------------------
@@ -408,15 +377,7 @@ public class FinderController {
 
 //---------------------------------------------------------------------------------------
 
-    public void drawRoute() {
-        double height = map.getFitHeight();
-        double width = map.getFitWidth();
 
-        System.out.println("Height: " + height);
-        System.out.println("Width: " + width);
-
-        System.out.println(stationList.get(0).station.getLatitude());
-    }
 
     //--------------------------------------Route Finding Methods--------------------------------------
     //--------------------------------------All Routes Methods-----------------------------------------
@@ -425,7 +386,7 @@ public class FinderController {
 
     @FXML
     public ListView<String> chosenRoute;
-    Map<Integer, List<GraphNodes<?>>> paths = new HashMap<>();
+    Map<Integer, List<GraphNodes<Stations>>> paths = new HashMap<>();
 
     //find the line that the two stations are on
     public void stationToStationByLine() {
@@ -436,7 +397,7 @@ public class FinderController {
         GraphNodes<Stations> startNode = stationList.get(i);
         GraphNodes<Stations> destNode = stationList.get(j);
         List<Stations> line;
-        List<GraphNodes<?>> encountered = new ArrayList<>();
+        List<GraphNodes<Stations>> encountered = new ArrayList<>();
         paths.clear();
 
         int numPath = 0;
@@ -452,11 +413,11 @@ public class FinderController {
 
                                 traverseGraphByLine(startNode, destNode, encountered, line);
 
-                                List<GraphNodes<?>> path = new ArrayList<>();
+                                List<GraphNodes<Stations>> path = new ArrayList<>();
 
 
                                 if (encountered != null) {
-                                    for (GraphNodes<?> node : encountered) {
+                                    for (GraphNodes<Stations> node : encountered) {
                                         if (startNode.station == node.station) {
                                             path = new ArrayList<>();
                                             path.add(node);
@@ -470,7 +431,7 @@ public class FinderController {
 
                                             if (!paths.isEmpty()) {
                                                 boolean pathExists = false;
-                                                for (List<GraphNodes<?>> n : paths.values()) {
+                                                for (List<GraphNodes<Stations>> n : paths.values()) {
                                                     if (n.equals(path)) {
                                                         pathExists = true;
                                                         numPath--;
@@ -478,7 +439,7 @@ public class FinderController {
                                                 }
                                                 if (!pathExists) {
                                                     pathsList.getItems().add("Route " + numPath + ": " + path.size() + " stops");
-                                                    for (GraphNodes<?> pathNode : path) {
+                                                    for (GraphNodes<Stations> pathNode : path) {
                                                         GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
                                                         pathsList.getItems().add(station.station.getName());
                                                     }
@@ -519,7 +480,7 @@ public class FinderController {
         GraphNodes<Stations> startNode = stationList.get(i);
         GraphNodes<Stations> destNode = stationList.get(j);
         List<Stations> line;
-        List<GraphNodes<?>> encountered = new ArrayList<>();
+        List<GraphNodes<Stations>> encountered = new ArrayList<>();
         paths.clear();
 
         int numPath = 0;
@@ -536,10 +497,10 @@ public class FinderController {
 
                                 traverseGraphByLine(startNode, destNode, encountered, line);
 
-                                List<GraphNodes<?>> path = new ArrayList<>();
+                                List<GraphNodes<Stations>> path = new ArrayList<>();
 
                                 if (encountered != null) {
-                                    for (GraphNodes<?> node : encountered) {
+                                    for (GraphNodes<Stations> node : encountered) {
                                         if (startNode.station == node.station) {
                                             path = new ArrayList<>();
                                             path.add(node);
@@ -553,7 +514,7 @@ public class FinderController {
 
                                             if (!paths.isEmpty()) {
                                                 boolean pathExists = false;
-                                                for (List<GraphNodes<?>> n : paths.values()) {
+                                                for (List<GraphNodes<Stations>> n : paths.values()) {
                                                     if (n.equals(path)) {
                                                         pathExists = true;
                                                         numPath--;
@@ -589,24 +550,108 @@ public class FinderController {
                         }
                     }
                 }
-
             }
         }
-        List<GraphNodes<?>> encountered2 = new ArrayList<>();
+        List<GraphNodes<Stations>> encountered2 = new ArrayList<>();
+
+        List<GraphNodes<Stations>> path = new ArrayList<>();
+
+        List<GraphNodes<Stations>> path2 = null;
 
         findNodesOnOneLine(startNode, destNode, encountered2);
-        System.out.println(encountered2);
+
+        int startNodeNumber = 0;
+        int destNodeNumber;
+
+
+        for(int z = 0; z < encountered2.size(); z++){
+            if(encountered2.get(z) == startNode){
+                path2 = new ArrayList<>();
+                path = new ArrayList<>();
+                path2.add(encountered2.get(z));
+                path.add(encountered2.get(z));
+                startNodeNumber = z;
+            }
+            if(encountered2.get(z) == destNode){
+                destNodeNumber = z;
+
+                int back = destNodeNumber-startNodeNumber;
+
+                for(int y = 0; y < back; y++){
+                    path2.add(encountered2.get(startNodeNumber+y));
+                }
+                for(int x = 0; x < path2.size(); x++){
+                    if(x+1 < path2.size()){
+                        if(path2.get(x).adjList.contains(path2.get(x+1))){
+                            if(!path.contains(path2.get(x))) {
+                                path.add(path2.get(x));
+                            }
+                        }else{
+                            List<GraphNodes<Stations>> pathOnLine = new ArrayList<>();
+                            List<Stations> lineNum = null;
+                            for(int w = 0; w < lineMap.size(); w++){
+                                if(lineMap.get(w) != null){
+//                                    System.out.println(lineMap.get(w));
+                                    if(lineMap.get(w).contains(path2.get(x).station) && lineMap.get(w).contains(path2.get(x+1).station)){
+                                        lineNum = lineMap.get(w);
+                                    }
+                                }
+                            }
+                            traverseGraphByLine(path2.get(x), path2.get(x+1), pathOnLine, lineNum);
+
+                            for (int w = 0; w < pathOnLine.size(); w++){
+                                if(!path.contains(pathOnLine.get(w))) {
+                                    path.add(pathOnLine.get(w));
+                                }
+                            }
+                        }
+                    }
+                }
+                path.add(encountered2.get(destNodeNumber));
+
+                System.out.println(path);
+
+                if (!paths.isEmpty()) {
+                    boolean pathExists = false;
+                    for (List<GraphNodes<Stations>> n : paths.values()) {
+                        if (n.equals(path)) {
+                            pathExists = true;
+                            numPath--;
+                        }
+                    }
+                    if (!pathExists) {
+                        pathsList.getItems().add("Route " + numPath + ": " + path.size() + " stops");
+                        for (GraphNodes<Stations> pathNode : path) {
+                            GraphNodes<Stations> station = pathNode;
+                            pathsList.getItems().add(station.station.getName());
+                        }
+                        pathsList.getItems().add(" ");
+                        paths.put(numPath, path);
+                        routes.getItems().add(numPath);
+                    }
+                }else {
+                    pathsList.getItems().add("Route " + numPath + ": " + path.size() + " stops");
+                    for (GraphNodes<Stations> pathNode : path) {
+                        GraphNodes<Stations> station = pathNode;
+                        pathsList.getItems().add(station.station.getName());
+                    }
+                    pathsList.getItems().add(" ");
+                    paths.put(numPath, path);
+                    routes.getItems().add(numPath);
+                }
+            }
+        }
     }
 
 
-    public void findNodesOnOneLine(GraphNodes<?> node1, GraphNodes<?> node2, List<GraphNodes<?>> encountered2) {
+    public void findNodesOnOneLine(GraphNodes<Stations> node1, GraphNodes<Stations> node2, List<GraphNodes<Stations>> encountered2) {
         if (encountered2 == null) {
             encountered2 = new ArrayList<>();
         }
 
         for (int i = 0; i < lineMap.size(); i++) {
 
-            for (GraphNodes<?> adjNode : node1.adjList) {
+            for (GraphNodes<Stations> adjNode : node1.adjList) {
                 if (lineMap.get(i) != null) {
 
                     if (lineMap.get(i).contains(adjNode.station) && lineMap.get(i).contains(node2.station)) {
@@ -614,7 +659,7 @@ public class FinderController {
                         encountered2.add(adjNode);
                         encountered2.add(node2);
                     } else {
-                        for (GraphNodes<?> adjNode2 : node2.adjList) {
+                        for (GraphNodes<Stations> adjNode2 : node2.adjList) {
                             if (lineMap.get(i) != null) {
                                 if (lineMap.get(i).contains(adjNode2.station) && lineMap.get(i).contains(adjNode.station)) {
                                     encountered2.add(node1);
@@ -624,9 +669,6 @@ public class FinderController {
                                     }
                                     encountered2.add(node2);
                                 }
-//                                else {
-//                                    findNodesOnOneLine(adjNode2, node2, encountered2);
-//                                }
                             }
                         }
                     }
@@ -639,13 +681,14 @@ public class FinderController {
 
 
     //traverse graph from one station to the next
-    public void traverseGraphByLine(GraphNodes<?> from, GraphNodes<?> to, List<GraphNodes<?>> encountered, List<Stations> line){
+    public void traverseGraphByLine(GraphNodes<Stations> from, GraphNodes<Stations> to, List<GraphNodes<Stations>> encountered, List<Stations> line){
         if(line != null) {
             if (encountered == null)
                 encountered = new ArrayList<>(); //First node so create new (empty) encountered list
             encountered.add(from);
+//            System.out.println(from.station.getName());
 
-            for (GraphNodes<?> adjNode : from.adjList) {
+            for (GraphNodes<Stations> adjNode : from.adjList) {
                 if (line.contains(adjNode.station)) {
                     if (adjNode.station == to.station) {
                         encountered.add(adjNode);
