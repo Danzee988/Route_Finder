@@ -5,12 +5,11 @@ public class Stations {
 
     int id;
     String name;
-
     int x;
     int y;
     float longitude;
-
     float latitude;
+
 
     //------------------Constructor------------------
     public Stations(int id, String name, float longitude, float latitude, int x, int y) {
@@ -22,10 +21,6 @@ public class Stations {
         this.y = y;
     }
 
-//    public Stations(int id, String name) {
-//        this.id = id;
-//        this.name = name;
-//    }
 
     //------------------Getters------------------
     public float getLongitude() {
@@ -37,11 +32,9 @@ public class Stations {
     public int getId () {
         return id;
     }
-
     public String getName () {
         return name;
     }
-
     public int getX() {
         return x;
     }
@@ -71,13 +64,11 @@ public class Stations {
     public void setX(int x) {
         this.x = x;
     }
-
     public void setY(int y) {
         this.y = y;
     }
 
     //------------------Methods------------------
-
 
 
     @Override
@@ -90,7 +81,6 @@ public class Stations {
                 " }";
     }
 
-    //@Override
     public String pathName() {
         return  name;
     }
