@@ -6,6 +6,10 @@ import Methods.Stations;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
@@ -15,8 +19,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 import javafx.util.Pair;
+import javafx.geometry.Point2D;
 
 import java.io.*;
 import java.util.*;
@@ -33,6 +37,8 @@ public class FinderController {
 
     @FXML
     private Button btnSignout;
+
+    Image imageDefault = new Image("file:src/main/resources/assignment/route_finder/images/London_Underground_Zone_1.png");
 
     @FXML
     private ImageView map;
@@ -59,6 +65,106 @@ public class FinderController {
     private ComboBox<String> destinationStn;
 
 
+    public void drawLine() {
+        int height = (int) imageDefault.getHeight();
+        int width = (int) imageDefault.getWidth();
+
+        WritableImage writableImage = new WritableImage(width, height);
+        PixelReader pixelReader = imageDefault.getPixelReader();
+        PixelWriter pixelWriter = writableImage.getPixelWriter();
+
+        int stn1 = startStn.getSelectionModel().getSelectedIndex();
+        int stn2 = destinationStn.getSelectionModel().getSelectedIndex();
+
+        Stations station1 = stationList.get(stn1).station;
+        Stations station2 = stationList.get(stn2).station;
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                Color color = pixelReader.getColor(i, j).grayscale();
+                pixelWriter.setColor(i, j, color);
+            }
+        }
+
+        int x1 = (int) ((station1.getX() * 1.63719) + 10);
+        int y1 = (int) (station1.getY() * 1.64932);
+
+        int x2 = (int) ((station2.getX() * 1.63719) + 10);
+        int y2 = (int) (station2.getY() * 1.64932);
+        //TODO: make this on a canvas
+
+//            rootNode.setAlignment(Pos.CENTER);
+//            Scene myScene = new Scene(rootNode, 450, 450);
+//            myStage.setScene(myScene);
+
+//            Canvas myCanvas = new Canvas(400, 400);
+//            GraphicsContext gc;
+
+//            // Get the graphics context for the canvas.
+//            gc = myCanvas.getGraphicsContext2D();
+//
+//
+//            gc.strokeLine(0, 0, 200, 200);
+//
+//            // Add the canvas and button to the scene graph.
+//            rootNode.getChildren().addAll(myCanvas);
+//
+//            // Show the stage and its scene.
+//            myStage.show();
+//        }
+
+
+        Canvas canvas = new Canvas(map.getImage().getWidth(), map.getImage().getHeight());
+//        Canvas canvas2 = new Canvas(editedImage.getImage().getWidth(), editedImage.getImage().getHeight());
+//
+//        // Get the GraphicsContext of the Canvas
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setLineWidth(3);
+        gc.setStroke(Color.RED);
+        gc.setFill(Color.RED);
+
+
+        gc.strokeLine(x1, y1, x2, y2);
+
+
+        ImageView numberedImage = new ImageView(writableImage);
+
+        Group group = new Group(numberedImage, canvas);
+        numberedImage = new ImageView(group.snapshot(null, null));
+
+        map.setImage(numberedImage.getImage());
+    }
+
+//    public static void drawLine(Point2D p1, Point2D p2, Color color, PixelWriter pw) {//www.java2s.com
+//        double k = (p2.getY() - p1.getY()) / (p2.getX() - p1.getX());
+//        if(k < 0) {
+//            Point2D temp = p1;
+//            p1 = p2;
+//            p2 = temp;
+//            k = (p2.getY() - p1.getY()) / (p2.getX() - p1.getX());
+//        }
+//
+//
+//        double y = 0;
+//        for (int x = (int) p1.getX(); x <= (int) p2.getX(); x++) {
+//            pw.setColor(x, (int) (y + .5), color);
+//            y += k;
+//        }
+//    }
+
+
+    @FXML
+    private void SelectStartPoint(MouseEvent event) {
+        map.setCursor(Cursor.CROSSHAIR);
+        map.setPickOnBounds(true);
+        map.setOnMouseClicked(e -> {
+            double secondposx = e.getX();
+            double secondposy = e.getY();
+            System.out.println(secondposx + ", " + secondposy);
+        });
+    }
+
+
     public void handleClicks(ActionEvent actionEvent) throws IOException {//side panel with buttons each button corresponds to displaying a panel
         if (actionEvent.getSource() == btnMain) {
             pnlMain.setVisible(true);
@@ -82,6 +188,7 @@ public class FinderController {
 
     @FXML
     void findStation(MouseEvent event) throws Exception {
+        map.setImage(imageDefault);
         readStationCsv("src\\main\\java\\London\\csv\\London.csv");
 
         populateStationAdjList("src\\main\\java\\London\\csv\\Lines.csv");
@@ -95,7 +202,7 @@ public class FinderController {
         while ((line = br.readLine()) != null) {
             String[] values = line.split(",");
             if (values.length > 4 && ("1".equals(values[4].trim()) || "1.5".equals(values[4].trim()))) {
-                Stations stn = new Stations(Integer.valueOf(values[0]), values[3], Float.valueOf(values[1]), Float.valueOf(values[2]));
+                Stations stn = new Stations(Integer.valueOf(values[0]), values[3], Float.valueOf(values[1]), Float.valueOf(values[2]),Integer.valueOf(values[5]),Integer.valueOf(values[6]));
                 GraphNodes<Stations> stn1 = new GraphNodes<>(stn);
                 stationList.add(stn1);
                 startStn.getItems().add(values[3]);
