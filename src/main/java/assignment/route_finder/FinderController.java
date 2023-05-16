@@ -1,19 +1,16 @@
 package assignment.route_finder;
 
 import Methods.GraphNodes;
-//import Methods.LineDefinition;
 import Methods.Stations;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -655,8 +652,7 @@ public class FinderController {
         if(line != null) {
             if (encountered == null)
                 encountered = new ArrayList<>(); //First node so create new (empty) encountered list
-            encountered.add(from);
-//            System.out.println(from.station.getName());
+            encountered.add(from); //Add current node to encountered list
 
             for (GraphNodes<Stations> adjNode : from.adjList) {
                 if (line.contains(adjNode.station)) {
