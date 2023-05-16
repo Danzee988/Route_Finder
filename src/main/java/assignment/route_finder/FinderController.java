@@ -7,6 +7,9 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
@@ -62,11 +65,11 @@ public class FinderController {
     private ComboBox<String> destinationStn;
 
 
-    public void drawOneLine(){
+    public void drawLine() {
         int height = (int) imageDefault.getHeight();
         int width = (int) imageDefault.getWidth();
 
-        WritableImage writableImage = new WritableImage(width,height);
+        WritableImage writableImage = new WritableImage(width, height);
         PixelReader pixelReader = imageDefault.getPixelReader();
         PixelWriter pixelWriter = writableImage.getPixelWriter();
 
@@ -76,24 +79,18 @@ public class FinderController {
         Stations station1 = stationList.get(stn1).station;
         Stations station2 = stationList.get(stn2).station;
 
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j < height; j++){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 Color color = pixelReader.getColor(i, j).grayscale();
                 pixelWriter.setColor(i, j, color);
             }
         }
 
-        int x1 = (int) (station1.getX() * 1.63719);
+        int x1 = (int) ((station1.getX() * 1.63719) + 10);
         int y1 = (int) (station1.getY() * 1.64932);
 
-        int x2 = (int) (station2.getX() * 1.63719);
+        int x2 = (int) ((station2.getX() * 1.63719) + 10);
         int y2 = (int) (station2.getY() * 1.64932);
-
-        System.out.println(x1 + " " + y1 + " " + x2 + " " + y2);
-
-        Point2D p1 = new Point2D(x1, y1);
-        Point2D p2 = new Point2D(x2, y2);
-
         //TODO: make this on a canvas
 
 //            rootNode.setAlignment(Pos.CENTER);
@@ -106,9 +103,6 @@ public class FinderController {
 //            // Get the graphics context for the canvas.
 //            gc = myCanvas.getGraphicsContext2D();
 //
-//            // Set the stroke and fill color.
-//            gc.setStroke(Color.BLUE);
-//            gc.setFill(Color.RED);
 //
 //            gc.strokeLine(0, 0, 200, 200);
 //
@@ -119,10 +113,26 @@ public class FinderController {
 //            myStage.show();
 //        }
 
-//        drawLine(p1, p2, Color.RED, pixelWriter);
 
-        map.setImage(writableImage);
+        Canvas canvas = new Canvas(map.getImage().getWidth(), map.getImage().getHeight());
+//        Canvas canvas2 = new Canvas(editedImage.getImage().getWidth(), editedImage.getImage().getHeight());
+//
+//        // Get the GraphicsContext of the Canvas
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setLineWidth(3);
+        gc.setStroke(Color.RED);
+        gc.setFill(Color.RED);
 
+
+        gc.strokeLine(x1, y1, x2, y2);
+
+
+        ImageView numberedImage = new ImageView(writableImage);
+
+        Group group = new Group(numberedImage, canvas);
+        numberedImage = new ImageView(group.snapshot(null, null));
+
+        map.setImage(numberedImage.getImage());
     }
 
 //    public static void drawLine(Point2D p1, Point2D p2, Color color, PixelWriter pw) {//www.java2s.com
@@ -260,7 +270,6 @@ public class FinderController {
     //travers the route from one station to the next
     public void routeNoTransfers(){
         stationToStationByLine();
-        drawOneLine();
     }
 
     public void shortRoute(){
