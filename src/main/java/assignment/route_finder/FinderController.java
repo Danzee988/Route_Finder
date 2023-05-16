@@ -280,6 +280,7 @@ public class FinderController {
         cost.setText("Route Cost: €" + roundedCost); //display the cost of the route
         int total = costs.size() + 1; //calculate the total number of stations in the route
         totalRoutes.setText("Total Routes: " + total); //display the total number of stations in the route
+        System.out.println("Total Cost: " + roundedCost);
     }
 
 
