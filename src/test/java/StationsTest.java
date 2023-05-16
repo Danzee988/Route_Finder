@@ -6,7 +6,7 @@ public class StationsTest {
 
     @Test
     public void testGetters() {
-        Stations station = new Stations(1, "Station 1", 10.0f, 20.0f);
+        Stations station = new Stations(1, "Station 1", 10.0f, 20.0f, 0, 0);
 
         Assertions.assertEquals(1, station.getId());
         Assertions.assertEquals("Station 1", station.getName());
@@ -16,7 +16,7 @@ public class StationsTest {
 
     @Test
     public void testSetters() {
-        Stations station = new Stations(1, "Station 1", 10.0f, 20.0f);
+        Stations station = new Stations(1, "Station 1", 10.0f, 20.0f , 0, 0);
 
         station.setId(2);
         station.setName("Station 2");
@@ -31,7 +31,7 @@ public class StationsTest {
 
     @Test
     public void testToString() {
-        Stations station = new Stations(1, "Station 1", 10.0f, 20.0f);
+        Stations station = new Stations(1, "Station 1", 10.0f, 20.0f, 0, 0);
 
         String expected = "Stations{ id= 1, name= Station 1, longitude= 10.0, latitude= 20.0 }";
         Assertions.assertEquals(expected, station.toString());
@@ -39,7 +39,7 @@ public class StationsTest {
 
     @Test
     public void testPathName() {
-        Stations station = new Stations(1, "Station 1", 10.0f, 20.0f);
+        Stations station = new Stations(1, "Station 1", 10.0f, 20.0f, 0, 0);
 
         Assertions.assertEquals("Station 1", station.pathName());
     }

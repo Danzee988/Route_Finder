@@ -58,10 +58,10 @@ public class testCostAndDistance {
         List<GraphNodes<Stations>> route1 = new ArrayList<>();
         List<GraphNodes<Stations>> route2 = new ArrayList<>();
         // Add GraphNodes<Stations> objects to the route lists
-        route1.add(new GraphNodes<>(new Stations(1, "Station 1", 10.0f, 20.0f)));
-        route1.add(new GraphNodes<>(new Stations(2, "Station 2", 30.0f, 40.0f)));
-        route2.add(new GraphNodes<>(new Stations(3, "Station 3", 50.0f, 60.0f)));
-        route2.add(new GraphNodes<>(new Stations(4, "Station 4", 70.0f, 80.0f)));
+        route1.add(new GraphNodes<>(new Stations(1, "Station 1", 10.0f, 20.0f, 0,0)));
+        route1.add(new GraphNodes<>(new Stations(2, "Station 2", 30.0f, 40.0f,0,0)));
+        route2.add(new GraphNodes<>(new Stations(3, "Station 3", 50.0f, 60.0f,0,0)));
+        route2.add(new GraphNodes<>(new Stations(4, "Station 4", 70.0f, 80.0f,0,0)));
 
         // Add route lists to paths
         paths.add(route1);
