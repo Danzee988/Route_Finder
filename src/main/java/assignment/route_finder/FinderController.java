@@ -20,11 +20,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
-
 import java.io.*;
 import java.util.*;
-
-//import static Methods.GraphTraversal.traverseGraphDepthFirst;
 
 public class FinderController {
 
@@ -43,16 +40,10 @@ public class FinderController {
     private ImageView map;
 
     @FXML
-    private Button overview;
-
-    @FXML
     private Pane pnlMain;
 
     @FXML
     private Pane pnlProcess;
-
-    @FXML
-    private ImageView scanndedMap;
 
     @FXML
     private ComboBox<Integer> routes;
@@ -72,9 +63,6 @@ public class FinderController {
         PixelReader pixelReader = imageDefault.getPixelReader();
         PixelWriter pixelWriter = writableImage.getPixelWriter();
 
-        int stn1 = startStn.getSelectionModel().getSelectedIndex();
-        int stn2 = destinationStn.getSelectionModel().getSelectedIndex();
-
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 Color color = pixelReader.getColor(i, j).grayscale();
@@ -85,7 +73,7 @@ public class FinderController {
         Canvas canvas = new Canvas(map.getImage().getWidth(), map.getImage().getHeight());
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setLineWidth(3);
+        gc.setLineWidth(5);
         gc.setStroke(Color.RED);
         gc.setFill(Color.RED);
 
@@ -120,19 +108,7 @@ public class FinderController {
     }
 
 
-    @FXML
-    private void SelectStartPoint(MouseEvent event) {
-        map.setCursor(Cursor.CROSSHAIR);
-        map.setPickOnBounds(true);
-        map.setOnMouseClicked(e -> {
-            double secondposx = e.getX();
-            double secondposy = e.getY();
-            System.out.println(secondposx + ", " + secondposy);
-        });
-    }
-
-
-    public void handleClicks(ActionEvent actionEvent) throws IOException {//side panel with buttons each button corresponds to displaying a panel
+    public void handleClicks(ActionEvent actionEvent){//side panel with buttons each button corresponds to displaying a panel
         if (actionEvent.getSource() == btnMain) {
             pnlMain.setVisible(true);
             pnlProcess.setVisible(false);
@@ -146,8 +122,6 @@ public class FinderController {
         }
     }//handles all the buttons on the left side of the screen
 
-    @FXML
-    private TextField stationID;
 
     public static List<GraphNodes<Stations>> stationList = new ArrayList<>();
 
@@ -263,8 +237,6 @@ public class FinderController {
         int routNum = routes.getSelectionModel().getSelectedIndex();
         int i = startStn.getSelectionModel().getSelectedIndex();
         int j = destinationStn.getSelectionModel().getSelectedIndex();
-        GraphNodes<Stations> startNode = stationList.get(i);
-        GraphNodes<Stations> destNode = stationList.get(j);
 
         chosenRoute.getItems().clear();
 
@@ -284,7 +256,6 @@ public class FinderController {
         List<GraphNodes<Stations>> currentPath = new ArrayList<>(); // current path being explored
         searchNodes(start, destination, visited, allPaths, currentPath); // search for all paths
         for (List<GraphNodes<Stations>> path : allPaths) { // print all paths
-//            System.out.println("Paths: " + allPaths.size());
             for (GraphNodes<Stations> node : path) {
                 System.out.print(node.station.getName());
                 System.out.println(" \n");
@@ -340,8 +311,8 @@ public class FinderController {
         List<Double> costs = new ArrayList<>();
 
         for (int k = 0; k < routSize - 1; k++) {
-            GraphNodes<Stations> stnNode1 = (GraphNodes<Stations>) paths.get(routNum + 1).get(k); //get the first station
-            GraphNodes<Stations> stnNode2 = (GraphNodes<Stations>) paths.get(routNum + 1).get(k + 1); //get the second station
+            GraphNodes<Stations> stnNode1 = paths.get(routNum + 1).get(k); //get the first station
+            GraphNodes<Stations> stnNode2 = paths.get(routNum + 1).get(k + 1); //get the second station
             double lat1 = stnNode1.station.getLatitude();
             double lon1 = stnNode1.station.getLongitude();
             double lat2 = stnNode2.station.getLatitude();
@@ -402,13 +373,13 @@ public class FinderController {
 
         int numPath = 0;
 
-        for (int k = 0; k < lineMap.size(); k++) {
+        for (int k = 0; k < lineMap.size(); k++) {//loop through the different lines in the hash map
             if (lineMap.get(k) != null) {
-                for (int l = 0; l < lineMap.get(k).size(); l++) {
-                    if (lineMap.get(k).get(l).getId() == startNode.station.getId()) {
-                        for (int m = 0; m < lineMap.get(k).size(); m++) {
-                            if (lineMap.get(k).get(m).getId() == destNode.station.getId()) {
-                                line = lineMap.get(k);
+                for (int l = 0; l < lineMap.get(k).size(); l++) {//loop through the stations in the line
+                    if (lineMap.get(k).get(l).getId() == startNode.station.getId()) {//if the station is the start station
+                        for (int m = 0; m < lineMap.get(k).size(); m++) {//loop through the stations in the line
+                            if (lineMap.get(k).get(m).getId() == destNode.station.getId()) {//if the station is the destination station
+                                line = lineMap.get(k);//get the line
                                 System.out.println(encountered.size() + " Encountered size");
 
                                 traverseGraphByLine(startNode, destNode, encountered, line);
@@ -440,7 +411,7 @@ public class FinderController {
                                                 if (!pathExists) {
                                                     pathsList.getItems().add("Route " + numPath + ": " + path.size() + " stops");
                                                     for (GraphNodes<Stations> pathNode : path) {
-                                                        GraphNodes<Stations> station = (GraphNodes<Stations>) pathNode;
+                                                        GraphNodes<Stations> station = pathNode;
                                                         pathsList.getItems().add(station.station.getName());
                                                     }
                                                     pathsList.getItems().add(" ");
@@ -591,7 +562,6 @@ public class FinderController {
                             List<Stations> lineNum = null;
                             for(int w = 0; w < lineMap.size(); w++){
                                 if(lineMap.get(w) != null){
-//                                    System.out.println(lineMap.get(w));
                                     if(lineMap.get(w).contains(path2.get(x).station) && lineMap.get(w).contains(path2.get(x+1).station)){
                                         lineNum = lineMap.get(w);
                                     }
