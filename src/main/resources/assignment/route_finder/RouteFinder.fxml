@@ -74,7 +74,7 @@
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="460.0" layoutX="76.0" layoutY="74.0" stroke="BLACK" strokeType="INSIDE" width="792.0" />
                   <ComboBox id="btnBrighter" fx:id="routes" layoutX="500.0" layoutY="561.0" prefHeight="25.0" prefWidth="116.0" promptText="Select a route" stylesheets="@style.css" />
-                  <ImageView fx:id="map" fitHeight="442.0" fitWidth="769.0" layoutX="86.0" layoutY="84.0" onMouseClicked="#SelectStartPoint" pickOnBounds="true" smooth="false" />
+                  <ImageView fx:id="map" fitHeight="442.0" fitWidth="769.0" layoutX="86.0" layoutY="84.0" pickOnBounds="true" smooth="false" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="300.0" layoutX="663.0" layoutY="74.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="300.0" />
                   <Button layoutX="32.0" layoutY="561.0" mnemonicParsing="false" onMouseClicked="#findStation" stylesheets="@style.css" text="Read Stations" />
                   <ComboBox id="btnBrighter" fx:id="startStn" layoutX="32.0" layoutY="600.0" prefHeight="25.0" prefWidth="173.0" promptText="Start" stylesheets="@style.css" />
